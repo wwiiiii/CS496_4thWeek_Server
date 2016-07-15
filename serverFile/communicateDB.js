@@ -1,5 +1,5 @@
 ﻿module.exports = {
-    addUser: addUser
+    addUser: addUser,
     removeUser: removeUser
 }
 //
@@ -31,9 +31,18 @@ function addUser(user, addUserCallback) {
             },
             function (collection, callback) {
                 log("addUser wtf 3");
-                mycon.insertToDb(collection, user, function (err) {
+               /* mycon.insertToDb(collection, user, function (err) {
                     if (err == null) callback(null, collection);
                     else callback(err, null);
+                });*/
+                collection.insert(user, function (err, res) {
+                    if (err) {
+                        console.log('insertToDb error');
+                        console.log(err);
+                        callback(err);
+                    } else {
+                        callback(null);
+                    }
                 });
             }
         ],
