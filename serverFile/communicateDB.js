@@ -1,102 +1,78 @@
 ﻿module.exports = {
-    sendContactToDb: sendContactToDb//,
-    //find: findAllFromDb
+    addUser: addUser
+    removeUser: removeUser
 }
 //
 var mycon = require('./connToMongo');
-var myfbcon = require('./connToFb');
 var server_ip = 'localhost';
 var mongodb = require('mongodb');
 var async = require('async');
 var server = new mongodb.Server(server_ip, 27017, { auto_reconnect: true });
 var log = console.log;
-var db = new mongodb.Db('mydb', server);
+var db = new mongodb.Db('kaistGoDB', server);
 
-
-
-
-function sendContactToDb(clientdata, androidCallback) {
-    var phoneContact = clientdata.phoneContact;
-    var userid = clientdata.userid;
-    var userpw = clientdata.userpw;
-	var fbContact = null;
+//나중에 중복 유저가 있는지 검사 루틴 추가
+function addUser(user, addUserCallback) {
     try {
         async.waterfall([
             function (callback) {
-                log("waterfall 1");
+                log("addUser wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, db);
+                    if (err) callback(err, 'wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
-                log("waterfall 2");
-                db.collection(userid, function (err, collection) {
+                log("addUser wtf 2");
+                db.collection('userCollection', function (err, collection) {
                     if (err) callback(err, 'wtf 2 err');
                     else callback(null, collection);
                 });
             },
-			function (collection, callback){
-				log("waterfall 2.5");
-				if (clientdata.fbinfo != undefined) {
-				    var token = clientdata.fbinfo.token; console.log(token);
-				    myfbcon.loadFriendByToken(token, function (fbres) {
-				        fbContact = fbres.data;
-				        callback(null, collection);
-				    })
-				} else {
-				    callback(null, collection);
-				}
-			},
-            function (collection, callback){
-                log('waterfall 2.75 / deleteEverything');
-                collection.deleteMany({},null, function (err, res) {
-                    console.log('delete all');
-                    if (err) { console.log(err); }
-                    //else console.log(res);
-                    callback(null, collection);
-                })
-            },
             function (collection, callback) {
-                log("waterfall 3");
-                var task = [];
-                phoneContact.forEach(function (item) {
-                    task.push(function (callb) {
-                        mycon.insert(collection, item, callb);
-                    });
-                });
-                if (fbContact != null) {
-                    fbContact.forEach(function (item) {
-                        task.push(function (callb) {
-                            mycon.insert(collection, item, callb);
-                        });
-                    });
-                }
-                async.parallel(task, function (err, results) {
-                    if (err) callback(err);
-                    else callback(null, collection);
-                });
-            },
-            function (collection, callback) {
-                log("waterfall 4");
-                mycon.findAll(collection, function (result) {
-                    console.log('************find ALL*************');
-                    //console.log(result);
-                    callback(null,result);
+                log("addUser wtf 3");
+                mycon.insertToDb(collection, user, function (err) {
+                    if (err == null) callback(null, collection);
+                    else callback(err, null);
                 });
             }
         ],
-        function (err, result) {
-            log("waterfall end");
-            if (err) throw err;
-            else log(result);
-            db.close();
-            if(!err)androidCallback(result);
-        });
+            function (err, result) {
+                log("addUser end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) addUserCallback(result);
+            });
     } catch (err) {
-        log("waterfall error");
+        log("addUser error");
         log(err);
-        androidCallback(null);
+        addUserCallback('addUser error occured');
     }
 }
 
+function removeUser(contraints, removeUserCallback)
+{
+    
+
+}
+
+function addCat(cat, addCatCallback)
+{
+
+}
+
+
+myuser = new Object();
+myuser['userid'] = '12345'
+myuser['userpw'] = 'password'
+myuser['userprofile'] = new Object();
+myuser['userprofile']['name'] = 'TestName'
+myuser['userprofile']['age'] = 'TestAge'
+myuser['userinfo'] = new Object();
+myuser['userinfo']['catfam'] = new Array();
+myuser['userinfo']['catfam'].push('CatName1')
+myuser['userinfo']['catfam'].push('CatName2')
+addUser(myuser, function (result) {
+    console.log(result);
+})
