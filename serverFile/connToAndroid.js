@@ -16,33 +16,22 @@ io.sockets.on('connection', function (socket) {
     var clie = new Object();
     clients[socket.id] = clie;
 
-    socket.on('init', function (data) {
-        var cli = new Object();
-        data = JSON.parse(data);
-        clients[socket.id].fbid = data.fbid;
-        clients[socket.id].name = data.name;
-        io.to(socket.id).emit('initres', data);
-        console.log('init');
-        console.log(socket.id);
-        console.log(clients[socket.id]);
-        console.log(data);
-        console.log(clients);
-        console.log("");
+    socket.on('init', function (loginStatus) {
+        loadUserData(loginStatus, function (user) {
+            io.to(socket.id).emit('initRes', user);
+            clients[socket.id].user = user;
+            console.log('initRes to ' + socket.id);
+            console.log(user);
+        });
+        console.log('init from ' + socket.id);
+        console.log('with loginStatus : ' + loginStatus);
     });
 
-    socket.on('uploadPhoneContact', function (data) {
-        clients[socket.id].phoneContact = data.contact;
-        clients[socket.id].userid = data.user.id;
-        clients[socket.id].userpw = data.user.pw;
-        clients[socket.id].fbinfo = data.fbinfo;
-        io.to(socket.id).emit('uploadPhoneContactres', "PhoneContact Uploaded For " + data.user.id);
-    });
-
-    socket.on('updateContact', function () {
-        console.log('starts to sendContactToDb');
-        mydb.sendContactToDb(clients[socket.id], function (result) {
-            io.to(socket.id).emit('updateContactres', result);
-        });        
+    socket.on('heartbeat', function (data) {
+        clients[socket.id].pos = data;
+        fineNearAll(data, function (data) {
+            io.to(socket.id).emit('heartbeatRes', data);
+        })
     });
 
     socket.on('disconnect', function () {

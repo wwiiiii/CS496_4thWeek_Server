@@ -1,6 +1,8 @@
 ﻿module.exports = {
     addUser: addUser,
-    removeUser: removeUser
+    addCat: addCat,
+    removeUser: removeUser,
+    removeCat: removeCat
 }
 //
 var mycon = require('./connToMongo');
@@ -68,9 +70,87 @@ function removeUser(contraints, removeUserCallback)
 
 function addCat(cat, addCatCallback)
 {
+    try {
+        async.waterfall([
+            function (callback) {
+                log("addCat wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'addCat wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("addCat wtf 2");
+                db.collection('catCollection', function (err, collection) {
+                    if (err) callback(err, 'addCat wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("addCat wtf 3");
+                collection.insert(cat, function (err, res) {
+                    if (err) {
+                        console.log('insertToDb error');
+                        console.log(err);
+                        callback(err);
+                    } else {
+                        callback(null);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                log("addCat end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) addCatCallback(result);
+            });
+    } catch (err) {
+        log("addCat error");
+        log(err);
+        addCatCallback('addCat error occured');
+    }
+}
+
+function loadUserData(constraint, loadUserDataCallback)//callback 인자는 유저 데이터 JSON 정보
+{
+
+
 
 }
 
+function findNearAll(position, findNearAllCallback)
+{
+    res = []
+    async.waterfall([
+        function (callback) {
+            findNearCats(position, callback)
+        },
+        function(catinfo, callback){
+            res = res.concat(catinfo)
+            findNearUsers(position, callback)    
+        },
+        function (userinfo, callback) {
+            res = res.concat(userinfo)
+            callback(null);
+        }
+        ],function(err, resu){
+            if (err) { console.log('findNearAll err : ' + err); findNearAllCallback(null); }
+            else findNearAllCallback(res);
+        });
+}
+
+function findNearCats(position, findNearCatsCallback)//callback 인자는 주변 고양이들 정보
+{
+
+
+}
+
+function findNearUsers(position, findNearUsersCallback)
+{
+
+}
 
 myuser = new Object();
 myuser['userid'] = '12345'
