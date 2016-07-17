@@ -276,12 +276,13 @@ mycat['catinfo']['catfam'].push('CatName2')
 mycat['catlocate'] = new Object();
 mycat['catlocate']['lon'] = '143.245345';
 mycat['catlocate']['lat'] = '51.243';
-addCat(mycat, function (result) {
-    console.log(result);
-})
+
 mypos = new Object();
 mypos['lon'] = '143.245343'
 mypos['lat'] = '51.244'
-findNearCats(mypos, function (docs) {
-    console.log(docs);
+addCat(mycat, function (result) {
+    console.log(result);
+    findNearCats(mypos, function (docs) {
+        console.log(docs);
+    })
 })
