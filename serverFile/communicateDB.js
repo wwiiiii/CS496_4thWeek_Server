@@ -259,9 +259,9 @@ myuser['userinfo'] = new Object();
 myuser['userinfo']['catfam'] = new Array();
 myuser['userinfo']['catfam'].push('CatName1')
 myuser['userinfo']['catfam'].push('CatName2')
-addUser(myuser, function (result) {
+/*addUser(myuser, function (result) {
     console.log(result);
-})
+})*/
 
 mycat = new Object();
 mycat['catid'] = '12345'
@@ -276,7 +276,7 @@ mycat['catinfo']['catfam'].push('CatName2')
 mycat['catlocate'] = new Object();
 mycat['catlocate']['lon'] = '143.245345';
 mycat['catlocate']['lat'] = '51.243';
-addcat(mycat, function (result) {
+addCat(mycat, function (result) {
     console.log(result);
 })
 mypos = new Object();
