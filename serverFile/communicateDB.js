@@ -184,7 +184,57 @@ function findNearAll(position, findNearAllCallback)
 
 function findNearCats(position, findNearCatsCallback)//callback 인자는 주변 고양이들 정보
 {
-
+    try {
+        async.waterfall([
+            function (callback) {
+                log("findNearCats wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'findNearCats wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("findNearCats wtf 2");
+                db.collection('catCollection', function (err, collection) {
+                    if (err) callback(err, 'findNearCats wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("findNearCats wtf 3");
+                var gpsDiff = 0.05
+                var locateContraint = {
+                    catlocate: {
+                        $elemMatch: {
+                            lat: { "$gte": position.lat - gpsDiff, "$lte": position.lat + gpsDiff },
+                            lon: { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff }
+                        }
+                    }
+                }
+                collection.find(locateContraint).toArray(function (err, docs) {
+                    if (err) {
+                        console.log('catFind - findAllFromDb error');
+                        console.log(err);
+                        if (callback != null) callback(err);
+                    }
+                    else {
+                        if (callback != null) callback(null, docs);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                log("findNearCats end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) findNearCatsCallback(result);
+            });
+    } catch (err) {
+        log("findNearCats error");
+        log(err);
+        findNearCatsCallback(null);
+    }
 
 }
 
@@ -212,4 +262,27 @@ myuser['userinfo']['catfam'].push('CatName1')
 myuser['userinfo']['catfam'].push('CatName2')
 addUser(myuser, function (result) {
     console.log(result);
+})
+
+mycat = new Object();
+mycat['catid'] = '12345'
+mycat['catpw'] = 'password'
+mycat['catprofile'] = new Object();
+mycat['catprofile']['name'] = 'TestName'
+mycat['catprofile']['age'] = 'TestAge'
+mycat['catinfo'] = new Object();
+mycat['catinfo']['catfam'] = new Array();
+mycat['catinfo']['catfam'].push('CatName1')
+mycat['catinfo']['catfam'].push('CatName2')
+mycat['catlocate'] = new Object();
+mycat['catlocate']['lon'] = '143.245345';
+mycat['catlocate']['lat'] = '51.243';
+addcat(mycat, function (result) {
+    console.log(result);
+})
+mypos = new Object();
+mypos['lon'] = '143.245343'
+mypos['lat'] = '51.244'
+findNearCats(mypos, function (docs) {
+    console.log(docs);
 })
