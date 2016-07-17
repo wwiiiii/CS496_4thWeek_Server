@@ -64,8 +64,49 @@ function addUser(user, addUserCallback) {
 
 function removeUser(contraints, removeUserCallback)
 {
-    
-
+    try {
+        async.waterfall([
+            function (callback) {
+                log("removeUser wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'removeUser wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("removeUser wtf 2");
+                db.collection('userCollection', function (err, collection) {
+                    if (err) callback(err, 'removeUser wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("removeUser wtf 3");
+                /* mycon.insertToDb(collection, user, function (err) {
+                     if (err == null) callback(null, collection);
+                     else callback(err, null);
+                 });*/
+                collection.deleteMany(constraints, function (err, res) {
+                    if (err) {
+                        console.log('deleteMany error');console.log(err);callback(err);
+                    } else {
+                        callback(null);
+                    }
+                })
+            }
+        ],
+            function (err, result) {
+                log("removeUser end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) removeUserCallback(result);
+            });
+    } catch (err) {
+        log("removeUser error");
+        log(err);
+        removeUserCallback('removeUser error occured');
+    }
 }
 
 function addCat(cat, addCatCallback)
@@ -149,6 +190,13 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
 
 function findNearUsers(position, findNearUsersCallback)
 {
+
+}
+
+function findNearShop(position, findNearShopCallback)
+{
+
+
 
 }
 

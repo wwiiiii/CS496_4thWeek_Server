@@ -4,8 +4,8 @@ var io = require('socket.io').listen(app);
 var fs = require('fs');
 var mydb = require('./communicateDB');
 var clients = {};
-
-app.listen(8124, function () { console.log('start listen');});
+var server_port = 8124;
+app.listen(server_port, function () { console.log('start listen');});
 
 function handler(req, res) {
     res.writeHead(200, { 'content-type': 'text/plain' });
