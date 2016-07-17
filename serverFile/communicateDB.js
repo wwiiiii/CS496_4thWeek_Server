@@ -203,12 +203,8 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
                 log("findNearCats wtf 3");
                 var gpsDiff = 0.05
                 var locateContraint = {
-                    catlocate: {
-                        $elemMatch: {
-                            lat: { "$gte": position.lat - gpsDiff, "$lte": position.lat + gpsDiff },
-                            lon: { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff }
-                        }
-                    }
+                    "catlocate.lon": { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff },
+                    "catlocate.lat": { "$gte": position.lat - gpsDiff, "$lte": position.lat + gpsDiff }
                 }
                 collection.find(locateContraint).toArray(function (err, docs) {
                     if (err) {
