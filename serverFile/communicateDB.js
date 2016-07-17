@@ -2,7 +2,6 @@
     addUser: addUser,
     addCat: addCat,
     removeUser: removeUser,
-    removeCat: removeCat
 }
 //
 var mycon = require('./connToMongo');
