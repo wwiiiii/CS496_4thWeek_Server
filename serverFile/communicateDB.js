@@ -231,10 +231,10 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                     if (err) {
                         console.log('loadUser - findAllFromDb error');
                         console.log(err);
-                        if (callback != null) callback(err);
+                        callback(err);
                     }
                     else {
-                        if (callback != null) callback(null, collection, docs);
+                        callback(null, collection, docs);
                     }
                 });
             },
