@@ -27,14 +27,14 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
             function (callback) {
                 log("loadUserData wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'loadUserData wtf 1 error');
+                    if (err) callback(err);
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("loadUserData wtf 2");
                 db.collection('userCollection', function (err, collection) {
-                    if (err) callback(err, 'loadUserData wtf 2 err');
+                    if (err) callback(err);
                     else callback(null, collection);
                 });
             },
