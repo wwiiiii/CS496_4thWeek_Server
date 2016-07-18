@@ -50,7 +50,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('admin_findNear', function (data) {
         var lon = Number(data.lon); var lat = Number(data.lat);
-        mydb.fineNearAll(data, function (nearData) {
+        mydb.findNearAll(data, function (nearData) {
             io.to(socket.id).emit('admin_findNearRes', nearData);
         })
     });

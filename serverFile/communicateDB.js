@@ -261,11 +261,17 @@ function findNearAll(position, findNearAllCallback)
     position.lat = Number(position.lat)
     async.waterfall([
         function (callback) {
-            findNearCats(position, callback)
+            findNearCats(position, function(errr, result){
+                if (errr != null) callback(errr)
+                else callback(null, result)
+            })
         },
         function(catinfo, callback){
             res = res.concat(catinfo)
-            findNearUsers(position, callback)    
+            findNearUsers(position, function(errr, result){
+                if (errr != null) callback(errr)
+                else callback(null, result)
+            })    
         },
         function (userinfo, callback) {
             res = res.concat(userinfo)
@@ -318,12 +324,12 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
                 if (err) throw err;
                 else log(result);
                 db.close();
-                if (!err) findNearCatsCallback(result);
+                if (!err) findNearCatsCallback(null , result);
             });
     } catch (err) {
         log("findNearCats error");
         log(err);
-        findNearCatsCallback(null);
+        findNearCatsCallback(err, null);
     }
 
 }
@@ -370,12 +376,12 @@ function findNearUsers(position, findNearUsersCallback)
                 if (err) throw err;
                 else log(result);
                 db.close();
-                if (!err) findNearUsersCallback(result);
+                if (!err) findNearUsersCallback(null, result);
             });
     } catch (err) {
         log("findNearUsers error");
         log(err);
-        findNearUsersCallback(null);
+        findNearUsersCallback(err, null);
     }
 }
 
