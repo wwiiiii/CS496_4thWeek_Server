@@ -40,20 +40,20 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
             },
             function (collection, callback) {
                 log("loadUserData wtf 3");
-                /*collection.find(userContraint).toArray(function (err, docs) {
+                collection.find(/*userContraint*/).toArray(function (err, docs) {
                     console.log('callback called(array)')
                     if (err) {
                         console.log('loadUser - findAllFromDb error');
                         console.log(err);
-                        //callback(err);
+                        callback(err);
                     }
                     else {
                         console.log('loadUserFindRes')
                         console.log(JSON.stringify(docs))
-                        //callback(null, collection, docs);
+                        callback(null, collection, docs);
                     }
                     callback(null, collection, docs);
-                });*/
+                });
             },
             function (collection, docs, callback) {
                 if (docs.length > 0) callback(null, docs[0]);
