@@ -7,7 +7,9 @@
     findNearAll: findNearAll,
     findNearCats: findNearCats,
     findNearUsers: findNearUsers,
-    updateUserData: updateUserData
+    updateUserData: updateUserData,
+    findStoreItem: findStoreItem,
+    addStoreItem: addStoreItem
 }
 //
 var mycon = require('./connToMongo');
@@ -456,6 +458,101 @@ function updateUserData(userid, change, updateUserDataCallback)
         log("updateUserData error");
         log(err);
         updateUserDataCallback('updateUserData error occured');
+    }
+}
+
+function addStoreItem(item, addStoreItemCallback) {
+    try {
+        async.waterfall([
+            function (callback) {
+                log("addStoreItem wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'addStoreItem wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("addStoreItem wtf 2");
+                db.collection('storeCollection', function (err, collection) {
+                    if (err) callback(err, 'addStoreItem wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("addStoreItem wtf 3");
+                collection.insert(item, function (err, res) {
+                    if (err) {
+                        console.log('insertToDb error');
+                        console.log(err);
+                        callback(err);
+                    } else {
+                        callback(null);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                log("addStoreItem end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) addStoreItemCallback(null, result);
+            });
+    } catch (err) {
+        log("addStoreItem error");
+        log(err);
+        addStoreItemCallback(err, null);
+    }
+}
+
+//return value is JSONArray of items
+function findStoreItem(condition, findStoreItemCallback)
+{
+    try {
+        async.waterfall([
+            function (callback) {
+                log("findStoreItem wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'findStoreItem wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("findStoreItem wtf 2");
+                db.collection('storeCollection', function (err, collection) {
+                    if (err) callback(err, 'findStoreItem wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("findStoreItem wtf 3");
+                var optionContraint = {
+                    "food":Boolean(condition.food), "snack":Boolean(condition.snack),
+                    "toy":Boolean(condition.toy), "etc":Boolean(condition.etc)
+                }
+                collection.find(optionContraint).toArray(function (err, docs) {
+                    if (err) {
+                        console.log('storeFind - findAllFromDb error');
+                        console.log(err);
+                        if (callback != null) callback(err);
+                    }
+                    else {
+                        if (callback != null) callback(null, docs);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                log("findStoreItem end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) findStoreItemCallback(null, result);
+            });
+    } catch (err) {
+        log("findStoreItem error");
+        log(err);
+        findStoreItemCallback(err, null);
     }
 }
 /*

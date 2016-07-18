@@ -42,6 +42,14 @@ io.sockets.on('connection', function (socket) {
         })
     });
 
+
+    //해당 조건에 맞는 상점 아이템들을 검색해줌
+    socket.on('store', function (condition) {
+
+
+
+    })
+
     socket.on('admin_addCat', function (data) {
         data.catlocate.lon = Number(data.catlocate.lon)
         data.catlocate.lat = Number(data.catlocate.lat)
@@ -50,11 +58,21 @@ io.sockets.on('connection', function (socket) {
             console.log(data)
         })
     });
-
+    socket.on('admin_addStoreItem', function (data) {
+        mydb.addStoreItem(data, function () {
+            io.to(socket.id).emit('admin_addStoreItemRes', data);
+            console.log(data)
+        })
+    });
     socket.on('admin_findNear', function (data) {
         var lon = Number(data.lon); var lat = Number(data.lat);
         mydb.findNearAll(data, function (nearData) {
             io.to(socket.id).emit('admin_findNearRes', nearData);
+        })
+    });
+    socket.on('admin_findStoreItem', function (data) {
+        mydb.findStoreItem(data, function (itemData) {
+            io.to(socket.id).emit('admin_findStoreItemRes', itemData);
         })
     });
 
