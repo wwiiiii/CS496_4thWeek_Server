@@ -234,6 +234,8 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                         callback(err);
                     }
                     else {
+                        console.log('loadUserFindRes')
+                        console.log(JSON.stringify(docs))
                         callback(null, collection, docs);
                     }
                 });
