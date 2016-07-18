@@ -42,7 +42,8 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                 log("loadUserData wtf 3");
                 console.log(userConstraint.name)
                 console.log(userConstraint.id)
-                collection.find(/*userContraint*/).toArray(function (err, docs) {
+                mycons = {userid:userConstraint.id}
+                collection.find(mycons).toArray(function (err, docs) {
                     console.log('callback called(array)')
                     if (err) {
                         console.log('loadUser - findAllFromDb error');
