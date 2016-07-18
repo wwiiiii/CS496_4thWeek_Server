@@ -2,6 +2,12 @@
     addUser: addUser,
     addCat: addCat,
     removeUser: removeUser,
+    removeCat: removeCat,
+    loadUserData: loadUserData,
+    findNearAll: findNearAll,
+    findNearCats: findNearCats,
+    findNearUsers: findNearUsers,
+    updateUserData: updateUserData
 }
 //
 var mycon = require('./connToMongo');
