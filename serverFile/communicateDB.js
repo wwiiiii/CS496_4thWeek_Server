@@ -20,6 +20,72 @@ var db = new mongodb.Db('kaistGoDB', server);
 var gpsDiff = 0.5
 
 
+function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 유저 데이터 JSON 정보
+{
+    try {
+        async.waterfall([
+            function (callback) {
+                log("loadUserData wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'loadUserData wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("loadUserData wtf 2");
+                db.collection('userCollection', function (err, collection) {
+                    if (err) callback(err, 'loadUserData wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("loadUserData wtf 3");
+                collection.find(userContraint).toArray(function (err, docs) {
+                    console.log('callback called(array)')
+                    if (err) {
+                        console.log('loadUser - findAllFromDb error');
+                        console.log(err);
+                        //callback(err);
+                    }
+                    else {
+                        console.log('loadUserFindRes')
+                        console.log(JSON.stringify(docs))
+                        //callback(null, collection, docs);
+                    }
+                    callback(null, collection, docs);
+                });
+            },
+            function (collection, docs, callback) {
+                if (docs.length > 0) callback(null, docs[0]);
+                else {
+                    newuser = new Object(); newuser.userid = userConstraint.id;
+                    newuser.userprofile = new Object()
+                    newuser.userprofile.name = userConstraint.name;
+                    newuser.userlocate = new Object()
+                    newuser.userlocate.lat = 0.0; newuser.userlocate.lon = 0.
+                    addUser(newuser, function(err, addres){
+                        if (err != null) callback(err, null);
+                        else {
+                            callback(null, newuser);
+                        }
+                    })
+                }
+            }
+        ],
+            function (err, result) {
+                log("loadUserData end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) loadUserDataCallback(null, result);
+            });
+    } catch (err) {
+        log("loadUserData error");
+        log(err);
+        loadUserDataCallback(err, null);
+    }
+}
+
 //나중에 중복 유저가 있는지 검사 루틴 추가
 function addUser(user, addUserCallback) {
     try {
@@ -207,75 +273,6 @@ function removeCat(contraints, removeCatCallback) {
     }
 }
 
-function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 유저 데이터 JSON 정보
-{
-    try {
-        async.waterfall([
-            function (callback) {
-                log("loadUserData wtf 1");
-                db.open(function (err, db) {
-                    if (err) callback(err, 'loadUserData wtf 1 error');
-                    else callback(null, db);
-                });
-            },
-            function (db, callback) {
-                log("loadUserData wtf 2");
-                db.collection('userCollection', function (err, collection) {
-                    if (err) callback(err, 'loadUserData wtf 2 err');
-                    else callback(null, collection);
-                });
-            },
-            function (collection, callback) {
-                log("loadUserData wtf 3");
-                try {
-                    collection.find(userContraint).toArray(function (err, docs) {
-                        console.log('callback called(array)')
-                        if (err) {
-                            console.log('loadUser - findAllFromDb error');
-                            console.log(err);
-                            callback(err);
-                        }
-                        else {
-                            console.log('loadUserFindRes')
-                            console.log(JSON.stringify(docs))
-                            callback(null, collection, docs);
-                        }
-                    });
-                }
-                catch (e) {
-                    console.log(e)
-                }
-            },
-            function (collection, docs, callback) {
-                if (docs.length > 0) callback(null, docs[0]);
-                else {
-                    newuser = new Object(); newuser.userid = userConstraint.id;
-                    newuser.userprofile = new Object()
-                    newuser.userprofile.name = userConstraint.name;
-                    newuser.userlocate = new Object()
-                    newuser.userlocate.lat = 0.0; newuser.userlocate.lon = 0.
-                    addUser(newuser, function(err, addres){
-                        if (err != null) callback(err, null);
-                        else {
-                            callback(null, newuser);
-                        }
-                    })
-                }
-            }
-        ],
-            function (err, result) {
-                log("loadUserData end");
-                if (err) throw err;
-                else log(result);
-                db.close();
-                if (!err) loadUserDataCallback(null, result);
-            });
-    } catch (err) {
-        log("loadUserData error");
-        log(err);
-        loadUserDataCallback(err, null);
-    }
-}
 
 function findNearAll(position, findNearAllCallback)
 {
