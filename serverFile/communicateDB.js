@@ -526,11 +526,15 @@ function findStoreItem(condition, findStoreItemCallback)
             },
             function (collection, callback) {
                 log("findStoreItem wtf 3");
-                var optionContraint = {
-                    "food":Boolean(condition.food), "snack":Boolean(condition.snack),
-                    "toy":Boolean(condition.toy), "etc":Boolean(condition.etc)
-                }
-                collection.find(optionContraint).toArray(function (err, docs) {
+                consArr = [];
+                consArr.push({'itemcatalog':'foo'})
+                if (Boolean(condition.food)) consArr.push({ 'itemcatalog': 'food' })
+                if (Boolean(condition.etc)) consArr.push({ 'itemcatalog': 'etc' })
+                if (Boolean(condition.toy)) consArr.push({ 'itemcatalog': 'toy' })
+                if (Boolean(condition.snack)) consArr.push({ 'itemcatalog': 'snack' })
+                var optionConstraint = new Object()
+                optionConstraint['$or'] = consArr
+                collection.find(optionConstraint).toArray(function (err, docs) {
                     if (err) {
                         console.log('storeFind - findAllFromDb error');
                         console.log(err);
