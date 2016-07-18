@@ -39,6 +39,11 @@ io.sockets.on('connection', function (socket) {
         })
     });
 
+    socket.on('admin_addCat', function (data) {
+        console.log(data)
+        io.to(socket.id).emit('admin_addCatRes',data)
+    });
+
     socket.on('disconnect', function () {
         console.log('disconnet');
         console.log(socket.id);
