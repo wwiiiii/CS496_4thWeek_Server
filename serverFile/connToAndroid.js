@@ -28,9 +28,14 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('heartbeat', function (data) {
-        clients[socket.id].pos = data;
-        fineNearAll(data, function (data) {
-            io.to(socket.id).emit('heartbeatRes', data);
+        var lon = Number(data.lon); var lat = Number(data.lat);
+        clients[socket.id].user.userlocate.lat = lat;
+        clients[socket.id].user.userlocate.lon = lon;
+        var change = {'userlocate.lat':lat, 'userlocate.lon':lon}
+        updateUserData(clients[socket.id].user.userid, change, function (result) {
+            fineNearAll(data, function (nearData) {
+                io.to(socket.id).emit('heartbeatRes', nearData);
+            })
         })
     });
 

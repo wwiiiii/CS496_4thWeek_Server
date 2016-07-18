@@ -11,6 +11,8 @@ var async = require('async');
 var server = new mongodb.Server(server_ip, 27017, { auto_reconnect: true });
 var log = console.log;
 var db = new mongodb.Db('kaistGoDB', server);
+var gpsDiff = 0.5
+
 
 //나중에 중복 유저가 있는지 검사 루틴 추가
 function addUser(user, addUserCallback) {
@@ -153,11 +155,97 @@ function addCat(cat, addCatCallback)
     }
 }
 
-function loadUserData(constraint, loadUserDataCallback)//callback 인자는 유저 데이터 JSON 정보
+
+function removeCat(contraints, removeCatCallback) {
+    try {
+        async.waterfall([
+            function (callback) {
+                log("removeCat wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'removeCat wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("removeCat wtf 2");
+                db.collection('catCollection', function (err, collection) {
+                    if (err) callback(err, 'removeCat wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("removeCat wtf 3");
+                /* mycon.insertToDb(collection, Cat, function (err) {
+                     if (err == null) callback(null, collection);
+                     else callback(err, null);
+                 });*/
+                collection.deleteMany(constraints, function (err, res) {
+                    if (err) {
+                        console.log('deleteMany error'); console.log(err); callback(err);
+                    } else {
+                        callback(null);
+                    }
+                })
+            }
+        ],
+            function (err, result) {
+                log("removeCat end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) removeCatCallback(result);
+            });
+    } catch (err) {
+        log("removeCat error");
+        log(err);
+        removeCatCallback('removeCat error occured');
+    }
+}
+
+function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 유저 데이터 JSON 정보
 {
-
-
-
+    try {
+        async.waterfall([
+            function (callback) {
+                log("loadUserData wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'loadUserData wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("loadUserData wtf 2");
+                db.collection('userCollection', function (err, collection) {
+                    if (err) callback(err, 'loadUserData wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("loadUserData wtf 3");
+                collection.find(userContraint).toArray(function (err, docs) {
+                    if (err) {
+                        console.log('loadUser - findAllFromDb error');
+                        console.log(err);
+                        if (callback != null) callback(err);
+                    }
+                    else {
+                        if (callback != null) callback(null, docs);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                log("loadUserData end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) loadUserDataCallback(result);
+            });
+    } catch (err) {
+        log("loadUserData error");
+        log(err);
+        loadUserDataCallback(null);
+    }
 }
 
 function findNearAll(position, findNearAllCallback)
@@ -201,7 +289,6 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
             },
             function (collection, callback) {
                 log("findNearCats wtf 3");
-                var gpsDiff = 0.05
                 var locateContraint = {
                     "catlocate.lon": { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff },
                     "catlocate.lat": { "$gte": position.lat - gpsDiff, "$lte": position.lat + gpsDiff }
@@ -235,7 +322,53 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
 
 function findNearUsers(position, findNearUsersCallback)
 {
-
+    try {
+        async.waterfall([
+            function (callback) {
+                log("findNearUsers wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'findNearUsers wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("findNearUsers wtf 2");
+                db.collection('userCollection', function (err, collection) {
+                    if (err) callback(err, 'findNearUsers wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("findNearUsers wtf 3");
+                
+                var locateContraint = {
+                    "userlocate.lon": { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff },
+                    "userlocate.lat": { "$gte": position.lat - gpsDiff, "$lte": position.lat + gpsDiff }
+                }
+                collection.find(locateContraint).toArray(function (err, docs) {
+                    if (err) {
+                        console.log('UserFind - findAllFromDb error');
+                        console.log(err);
+                        if (callback != null) callback(err);
+                    }
+                    else {
+                        if (callback != null) callback(null, docs);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                log("findNearUsers end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) findNearUsersCallback(result);
+            });
+    } catch (err) {
+        log("findNearUsers error");
+        log(err);
+        findNearUsersCallback(null);
+    }
 }
 
 function findNearShop(position, findNearShopCallback)
@@ -243,6 +376,51 @@ function findNearShop(position, findNearShopCallback)
 
 
 
+}
+
+function updateUserData(userid, change, updateUserDataCallback)
+{
+    try {
+        async.waterfall([
+            function (callback) {
+                log("updateUserData wtf 1");
+                db.open(function (err, db) {
+                    if (err) callback(err, 'wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("updateUserData wtf 2");
+                db.collection('userCollection', function (err, collection) {
+                    if (err) callback(err, 'wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("updateUserData wtf 3");
+                collction.findAndModify({ "userid": userid }, [['userid', userid]], { $set: change }, { new: true, upsert: false }, function (err, doc) {
+                    if (err) {
+                        console.log('updateUser error');
+                        console.log(err);
+                        callback(err);
+                    } else {
+                        callback(null, doc);
+                    }
+                })
+            }
+        ],
+            function (err, result) {
+                log("updateUserData end");
+                if (err) throw err;
+                else log(result);
+                db.close();
+                if (!err) updateUserDataCallback(result);
+            });
+    } catch (err) {
+        log("updateUserData error");
+        log(err);
+        updateUserDataCallback('updateUserData error occured');
+    }
 }
 
 myuser = new Object();
@@ -274,8 +452,8 @@ mycat['catlocate']['lon'] = '143.245345';
 mycat['catlocate']['lat'] = '51.243';
 
 mypos = new Object();
-mypos['lon'] = '143.245343'
-mypos['lat'] = '51.244'
+mypos['lon'] = 143.245343
+mypos['lat'] = 51.244
 addCat(mycat, function (result) {
     console.log(result);
     findNearCats(mypos, function (docs) {
