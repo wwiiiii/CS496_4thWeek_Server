@@ -251,6 +251,8 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
 function findNearAll(position, findNearAllCallback)
 {
     res = []
+    position.lon = Number(position.lon)
+    position.lat = Number(position.lat)
     async.waterfall([
         function (callback) {
             findNearCats(position, callback)

@@ -40,9 +40,21 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('admin_addCat', function (data) {
-        console.log(data)
-        io.to(socket.id).emit('admin_addCatRes',data)
+        data.catlocate.lon = Number(data.catlocate.lon)
+        data.catlocate.lat = Number(data.catlocate.lat)
+        mydb.addCat(data, function () {
+            io.to(socket.id).emit('admin_addCatRes', data);
+            console.log(data)
+        })
     });
+
+    socket.on('admin_findNear', function (data) {
+        var lon = Number(data.lon); var lat = Number(data.lat);
+        fineNearAll(data, function (nearData) {
+            io.to(socket.id).emit('admin_findNearRes', nearData);
+        })
+    });
+
 
     socket.on('disconnect', function () {
         console.log('disconnet');
