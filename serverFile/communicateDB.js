@@ -534,6 +534,7 @@ function findStoreItem(condition, findStoreItemCallback)
                 if (Boolean(condition.snack)) consArr.push({ 'itemcatalog': 'snack' })
                 var optionConstraint = new Object()
                 optionConstraint['$or'] = consArr
+                console.log(optionConstraint)
                 collection.find(optionConstraint).toArray(function (err, docs) {
                     if (err) {
                         console.log('storeFind - findAllFromDb error');

@@ -71,7 +71,7 @@ io.sockets.on('connection', function (socket) {
         })
     });
     socket.on('admin_findStoreItem', function (data) {
-        mydb.findStoreItem(data, function (itemData) {
+        mydb.findStoreItem(data, function (err, itemData) {
             io.to(socket.id).emit('admin_findStoreItemRes', itemData);
         })
     });
