@@ -52,7 +52,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                         console.log(JSON.stringify(docs))
                         callback(null, collection, docs);
                     }
-                    callback(null, collection, docs);
+                    //callback(null, collection, docs);
                 });
             },
             function (collection, docs, callback) {
