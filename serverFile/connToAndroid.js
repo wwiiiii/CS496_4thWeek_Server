@@ -17,14 +17,17 @@ io.sockets.on('connection', function (socket) {
     clients[socket.id] = clie;
 
     socket.on('init', function (loginStatus) {
-        mydb.loadUserData(loginStatus, function (user) {
-            io.to(socket.id).emit('initRes', user);
-            clients[socket.id].user = user;
-            console.log('initRes to ' + socket.id);
-            console.log(user);
+        mydb.loadUserData(loginStatus, function (err, user) {
+            if (err) { console.log(err); }
+            else {
+                io.to(socket.id).emit('initRes', user);
+                clients[socket.id].user = user;
+                console.log('initRes to ' + socket.id);
+                console.log(user);
+            }
         });
         console.log('init from ' + socket.id);
-        console.log('with loginStatus : ' + loginStatus);
+        console.log('with loginStatus : ' + JSON.stringify(loginStatus));
     });
 
     socket.on('heartbeat', function (data) {

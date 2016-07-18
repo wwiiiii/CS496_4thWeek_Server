@@ -60,12 +60,12 @@ function addUser(user, addUserCallback) {
                 if (err) throw err;
                 else log(result);
                 db.close();
-                if (!err) addUserCallback(result);
+                if (!err) addUserCallback(null, result);
             });
     } catch (err) {
         log("addUser error");
         log(err);
-        addUserCallback('addUser error occured');
+        addUserCallback(err, null);
     }
 }
 
@@ -161,7 +161,6 @@ function addCat(cat, addCatCallback)
     }
 }
 
-
 function removeCat(contraints, removeCatCallback) {
     try {
         async.waterfall([
@@ -235,9 +234,25 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                         if (callback != null) callback(err);
                     }
                     else {
-                        if (callback != null) callback(null, docs);
+                        if (callback != null) callback(null, collection, docs);
                     }
                 });
+            },
+            function (collection, docs, callback) {
+                if (docs.length > 0) callback(null, docs[0]);
+                else {
+                    newuser = new Object(); newuser.userid = userConstraint.id;
+                    newuser.userprofile = new Object()
+                    newuser.userprofile.name = userConstraint.name;
+                    newuser.userlocate = new Object()
+                    newuser.userlocate.lat = 0.0; newuser.userlocate.lon = 0.
+                    addUser(newuser, function(err, addres){
+                        if (err != null) callback(err, null);
+                        else {
+                            callback(null, newuser);
+                        }
+                    })
+                }
             }
         ],
             function (err, result) {
@@ -245,12 +260,12 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                 if (err) throw err;
                 else log(result);
                 db.close();
-                if (!err) loadUserDataCallback(result);
+                if (!err) loadUserDataCallback(null, result);
             });
     } catch (err) {
         log("loadUserData error");
         log(err);
-        loadUserDataCallback(null);
+        loadUserDataCallback(err, null);
     }
 }
 
@@ -412,7 +427,7 @@ function updateUserData(userid, change, updateUserDataCallback)
             },
             function (collection, callback) {
                 log("updateUserData wtf 3");
-                collction.findAndModify({ "userid": userid }, [['userid', userid]], { $set: change }, { new: true, upsert: false }, function (err, doc) {
+                collction.findAndModify({ "userid": userid }, [['userid', userid]], { $set: change }, { new: true, upsert: true }, function (err, doc) {
                     if (err) {
                         console.log('updateUser error');
                         console.log(err);
