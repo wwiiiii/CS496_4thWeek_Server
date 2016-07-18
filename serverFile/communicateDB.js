@@ -527,11 +527,15 @@ function findStoreItem(condition, findStoreItemCallback)
             function (collection, callback) {
                 log("findStoreItem wtf 3");
                 consArr = [];
-                consArr.push({'itemcatalog':'foo'})
-                if (Boolean(condition.food)) consArr.push({ 'itemcatalog': 'food' })
-                if (Boolean(condition.etc)) consArr.push({ 'itemcatalog': 'etc' })
-                if (Boolean(condition.toy)) consArr.push({ 'itemcatalog': 'toy' })
-                if (Boolean(condition.snack)) consArr.push({ 'itemcatalog': 'snack' })
+                consArr.push({ 'itemcatalog': 'foo' })
+                console.log(Boolean(conditon.food))
+                console.log(Boolean(conditon.etc))
+                console.log(Boolean(conditon.toy))
+                console.log(Boolean(conditon.snack))
+                if (Boolean(condition.food) == true) consArr.push({ 'itemcatalog': 'food' })
+                if (Boolean(condition.etc) == true) consArr.push({ 'itemcatalog': 'etc' })
+                if (Boolean(condition.toy) == true) consArr.push({ 'itemcatalog': 'toy' })
+                if (Boolean(condition.snack) == true) consArr.push({ 'itemcatalog': 'snack' })
                 var optionConstraint = new Object()
                 optionConstraint['$or'] = consArr
                 console.log(optionConstraint)
