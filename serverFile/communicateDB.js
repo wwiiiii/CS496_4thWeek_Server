@@ -40,7 +40,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
             },
             function (collection, callback) {
                 log("loadUserData wtf 3");
-                collection.find(userContraint).toArray(function (err, docs) {
+                /*collection.find(userContraint).toArray(function (err, docs) {
                     console.log('callback called(array)')
                     if (err) {
                         console.log('loadUser - findAllFromDb error');
@@ -53,7 +53,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                         //callback(null, collection, docs);
                     }
                     callback(null, collection, docs);
-                });
+                });*/
             },
             function (collection, docs, callback) {
                 if (docs.length > 0) callback(null, docs[0]);
