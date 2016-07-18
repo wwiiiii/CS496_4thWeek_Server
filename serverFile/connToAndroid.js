@@ -17,6 +17,7 @@ io.sockets.on('connection', function (socket) {
     clients[socket.id] = clie;
 
     socket.on('init', function (loginStatus) {
+        console.log(loginStatus.id=='923825431078555')
         mydb.loadUserData(loginStatus, function (err, user) {
             if (err) { console.log(err); }
             else {
