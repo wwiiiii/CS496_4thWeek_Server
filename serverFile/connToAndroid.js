@@ -17,7 +17,7 @@ io.sockets.on('connection', function (socket) {
     clients[socket.id] = clie;
 
     socket.on('init', function (loginStatus) {
-        loadUserData(loginStatus, function (user) {
+        mydb.loadUserData(loginStatus, function (user) {
             io.to(socket.id).emit('initRes', user);
             clients[socket.id].user = user;
             console.log('initRes to ' + socket.id);
@@ -32,8 +32,8 @@ io.sockets.on('connection', function (socket) {
         clients[socket.id].user.userlocate.lat = lat;
         clients[socket.id].user.userlocate.lon = lon;
         var change = {'userlocate.lat':lat, 'userlocate.lon':lon}
-        updateUserData(clients[socket.id].user.userid, change, function (result) {
-            fineNearAll(data, function (nearData) {
+        mydb.updateUserData(clients[socket.id].user.userid, change, function (result) {
+            mydb.fineNearAll(data, function (nearData) {
                 io.to(socket.id).emit('heartbeatRes', nearData);
             })
         })
@@ -50,7 +50,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('admin_findNear', function (data) {
         var lon = Number(data.lon); var lat = Number(data.lat);
-        fineNearAll(data, function (nearData) {
+        mydb.fineNearAll(data, function (nearData) {
             io.to(socket.id).emit('admin_findNearRes', nearData);
         })
     });

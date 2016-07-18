@@ -430,7 +430,7 @@ function updateUserData(userid, change, updateUserDataCallback)
         updateUserDataCallback('updateUserData error occured');
     }
 }
-
+/*
 myuser = new Object();
 myuser['userid'] = '12345'
 myuser['userpw'] = 'password'
@@ -444,7 +444,7 @@ myuser['userinfo']['catfam'].push('CatName2')
 /*addUser(myuser, function (result) {
     console.log(result);
 })*/
-
+/*
 mycat = new Object();
 mycat['catid'] = '12345'
 mycat['catpw'] = 'password'
@@ -468,3 +468,4 @@ addCat(mycat, function (result) {
         console.log(docs);
     })
 })
+*/
