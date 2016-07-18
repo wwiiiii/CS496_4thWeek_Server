@@ -28,10 +28,10 @@
       var socket = io('http://52.78.66.95:8124');
       $('form').submit(function () {
           var option = new Object()
-          option.food = Boolean($('#food').val())
-          option.snack = Boolean($('#snack').val())
-          option.toy = Boolean($('#toy').val())
-          option.etc = Boolean($('#etc').val())
+          option.food = ($('#food').val() == 'true')
+          option.snack = ($('#snack').val() == 'true')
+          option.toy = ($('#toy').val()=='true')
+          option.etc = ($('#etc').val()=='true')
           socket.emit('admin_findStoreItem', option);
         //$('#m').val('');
         return false;
