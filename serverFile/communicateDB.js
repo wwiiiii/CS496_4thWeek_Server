@@ -754,15 +754,10 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                         }
                     }
                     if (flag == false) {
-                        findItemByID(itemid, function (err, res) {
-                            if (err) return callback(err);
-                            else {
-                                res['itemcnt'] = Number(cnt)
-                                itemarr.push(res)
-                            }
-                        })
+                        var temp = item; temp['itemcnt'] = cnt
+                        itemarr.push(temp)
                     }
-                    updateUserData(userid, { 'user.userInfo.money': nowmoney - targetmoney, 'user.userItem' : itemarr }, function (err, res) {
+                    updateUserData(userid, { 'userInfo.money': nowmoney - targetmoney, 'userItem' : itemarr }, function (err, res) {
                         if (err) return callback(err);
                         else callback(null, 'buyItem succed' + String(nowmoney-targetmoney))
                     })
