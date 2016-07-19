@@ -18,7 +18,7 @@ var mongodb = require('mongodb');
 var async = require('async');
 var server = new mongodb.Server(server_ip, 27017, { auto_reconnect: true });
 var log = console.log;
-var db = new mongodb.Db('kaistGoDB', server);
+
 var gpsDiff = 0.5
 
 
@@ -26,7 +26,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
 {
     userid = userConstraint.ID
     username = userConstraint.name
-
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
@@ -98,6 +98,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
 
 //나중에 중복 유저가 있는지 검사 루틴 추가
 function addUser(user, addUserCallback) {
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
@@ -143,6 +144,7 @@ function addUser(user, addUserCallback) {
 
 function removeUser(contraints, removeUserCallback)
 {
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
@@ -190,6 +192,7 @@ function removeUser(contraints, removeUserCallback)
 
 function addCat(cat, addCatCallback)
 {
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
@@ -234,6 +237,7 @@ function addCat(cat, addCatCallback)
 }
 
 function removeCat(contraints, removeCatCallback) {
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
@@ -282,6 +286,7 @@ function removeCat(contraints, removeCatCallback) {
 
 function findNearAll(position, findNearAllCallback)
 {
+    var db = new mongodb.Db('kaistGoDB', server);
     res = []
     position.lon = Number(position.lon)
     position.lat = Number(position.lat)
@@ -311,6 +316,7 @@ function findNearAll(position, findNearAllCallback)
 
 function findNearCats(position, findNearCatsCallback)//callback 인자는 주변 고양이들 정보
 {
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
@@ -362,6 +368,7 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
 
 function findNearUsers(position, findNearUsersCallback)
 {
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
@@ -420,6 +427,7 @@ function findNearShop(position, findNearShopCallback)
 
 function updateUserData(myid, change, updateUserDataCallback)
 {
+    var db = new mongodb.Db('kaistGoDB', server);
     console.log('updateUserData change with ' + JSON.stringify(change))
     try {
         async.waterfall([
@@ -470,6 +478,7 @@ function updateUserData(myid, change, updateUserDataCallback)
 }
 
 function addStoreItem(item, addStoreItemCallback) {
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
@@ -516,19 +525,20 @@ function addStoreItem(item, addStoreItemCallback) {
 //return value is JSONArray of items
 function findStoreItem(condition, findStoreItemCallback)
 {
+    var db = new mongodb.Db('kaistGoDB', server);
     try {
         async.waterfall([
             function (callback) {
                 log("findStoreItem wtf 1");
                 db.open(function (err, db) {
-                    if (err) return callback(err, 'findStoreItem wtf 1 error');
+                    if (err) return callback(err);
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("findStoreItem wtf 2");
                 db.collection('storeCollection', function (err, collection) {
-                    if (err) return callback(err, 'findStoreItem wtf 2 err');
+                    if (err) return callback(err);
                     else callback(null, collection);
                 });
             },
