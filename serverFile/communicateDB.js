@@ -530,13 +530,13 @@ function findStoreItem(condition, findStoreItemCallback)
         if(errR) return console.log(errR)
         try {
             async.waterfall([
-                function (callback) {
+                /*function (callback) {
                     log("findStoreItem wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err);
                         else callback(null, db);
                     });
-                },
+                },*/
                 function (db, callback) {
                     log("findStoreItem wtf 2");
                     db.collection('storeCollection', function (err, collection) {
