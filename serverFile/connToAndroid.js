@@ -13,6 +13,7 @@ function handler(req, res) {
 
 io.sockets.on('connection', function (socket) {
 
+    socket.setMaxListeners(25);
     socket.on('init', function (loginStatus) {
         mydb.loadUserData(loginStatus, function (err, user) {
             if (err) { console.log(err); }
@@ -83,6 +84,16 @@ io.sockets.on('connection', function (socket) {
         });
     })
 
+    socket.on('buy', function (data) {
+        console.log('buy called with ' + JSON.stringify(data))
+        mydb.buyItem(data.userid, data.itemid, data.quantity, function (err, res) {
+            if (err) { console.log(err); io.to(socket.id).emit('buyRes', {'isSucceed' : false, 'error' : err}) }
+            else {
+                console.log('buy succeed')
+                io.to(socket.id).emit('buyRes', {'isSucceed' : true, 'error' : null})
+            }
+        })
+    })
     
 
     //여기서부터는 admin용

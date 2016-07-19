@@ -9,7 +9,9 @@
     findNearUsers: findNearUsers,
     updateUserData: updateUserData,
     findStoreItem: findStoreItem,
-    addStoreItem: addStoreItem
+    addStoreItem: addStoreItem,
+    buyItem: buyItem,
+    findItemByID : findItemByID
 }
 //
 var mycon = require('./connToMongo');
@@ -710,5 +712,69 @@ function findItemByID(itemID, findItemByIDCallback)
 //유저 정보 로딩 -> 아이템 정보 로딩 -> 구매 가능한지 판단 -> 가능하면 정보 업데이트
 function buyItem(userid, itemid, cnt, buyItemCallback)
 {
-
+    try {
+        async.waterfall([
+            function (callback) {
+                log("buyItem wtf 1");//find user info
+                db.collection('userCollection', function (err, collection) {
+                    if (err) return callback(err);
+                    else {
+                        collection.find({ 'userid': userid }).toArray(function (err, docs) {
+                            if (err) return callback(err);
+                            else if (docs.length == 0) return callback('No Such User');
+                            else {
+                                callback(null, docs[0]);
+                            }
+                        })
+                    }
+                });
+            },
+            function (user, callback) {
+                log("buyItem wtf 2");
+                findItemByID(itemid, function (err, item) {
+                    if (err) return callback(err);
+                    else callback(null, user, item)
+                });
+            },
+            function (user, item, callback) {
+                log('buyItem wtf 3');
+                var nowmoney = Number(user.userInfo.money)
+                var targetmoney = Number(item.itemcost) * Number(cnt)
+                if (nowmoney < targetmoney) {
+                    return callback('NoMONEY')
+                } else {
+                    itemarr = user.userItem; var flag = false
+                    for (var i = 0; i < itemarr.length; i++)
+                    {
+                        if (itemarr[i]['itemID'] == itemid) {
+                            itemarr[i]['itemcnt'] += cnt;
+                            flag = true
+                        }
+                    }
+                    if (flag == false) {
+                        findItemByID(itemid, function (err, res) {
+                            if (err) return callback(err);
+                            else {
+                                res['itemcnt'] = Number(cnt)
+                                itemarr.push(res)
+                            }
+                        })
+                    }
+                    updateUserData(userid, { 'user.userInfo.money': nowmoney - targetmoney, 'user.userItem' : itemarr }, function (err, res) {
+                        if (err) return callback(err);
+                        else callback(null, 'buyItem succed' + String(nowmoney-targetmoney))
+                    })
+                }
+            }
+        ],
+            function (err, result) {
+                log("buyItem end");
+                if (err) throw err; else log(result);
+                if (!err) buyItemCallback(null, result);
+            });
+    } catch (err) {
+        log("buyItem error");
+        log(err);
+        buyItemCallback(err, null);
+    }
 }
