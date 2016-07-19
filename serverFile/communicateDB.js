@@ -28,8 +28,11 @@ MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (err, firstd
 
 function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 유저 데이터 JSON 정보
 {
-    userid = userConstraint.ID
-    username = userConstraint.name
+    userid = 'None'; username = 'None';
+    if (userConstraint.hasOwnProperty('ID')) userid = userConstraint.ID
+    if (userConstraint.hasOwnProperty('id')) userid = userConstraint.id
+    if (userConstraint.hasOwnProperty('userid')) userid = userConstraint.userid
+    if (userConstraint.hasOwnProperty('name')) username = userConstraint.name
     ////MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
         ////if(errR) return console.log(errR)
         try {
@@ -102,6 +105,62 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
    // })
 }
 
+
+//callback 인자는 고양이 object
+function loadCatData(catname, loadCatDataCallback)
+{
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+    //if(errR) return console.log(errR)
+    try {
+        async.waterfall([
+            function (callback) {
+                log("loadCatData wtf 1");
+                db.open(function (err, db) {
+                    if (err) return callback(err, 'loadCatData wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("loadCatData wtf 2");
+                db.collection('catCollection', function (err, collection) {
+                    if (err) return callback(err, 'loadCatData wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("loadCatData wtf 3");
+                var nameConstraint = {
+                    "catName" : catname
+                }
+                collection.find(nameConstraint).toArray(function (err, docs) {
+                    if (err) {
+                        console.log('catFind - findAllFromDb error');
+                        console.log(err);
+                        if (callback != null) return callback(err);
+                    }
+                    else {
+                        if (callback != null) callback(null, docs);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                log("loadCatData end");
+                if (err) throw err;
+                else log(result);
+                //db.close();
+                if (!err) loadCatDataCallback(null, result[0]);
+            });
+    } catch (err) {
+        log("loadCatData error");
+        log(err);
+        loadCatDataCallback(err, null);
+    }
+    // })
+
+}
+
+
 //나중에 중복 유저가 있는지 검사 루틴 추가
 function addUser(user, addUserCallback) {
     //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
@@ -150,7 +209,7 @@ function addUser(user, addUserCallback) {
    // })
 }
 
-function removeUser(contraints, removeUserCallback)
+function removeUser(constraints, removeUserCallback)
 {
     //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
         //if(errR) return console.log(errR)
@@ -248,7 +307,7 @@ function addCat(cat, addCatCallback)
     //})
 }
 
-function removeCat(contraints, removeCatCallback) {
+function removeCat(constraints, removeCatCallback) {
     //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
         //if(errR) return console.log(errR)
         try {
@@ -352,11 +411,11 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
                 },
                 function (collection, callback) {
                     log("findNearCats wtf 3");
-                    var locateContraint = {
+                    var locateConstraint = {
                         "catlocate.lon": { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff },
                         "catlocate.lat": { "$gte": position.lat - gpsDiff, "$lte": position.lat + gpsDiff }
                     }
-                    collection.find(locateContraint).toArray(function (err, docs) {
+                    collection.find(locateConstraint).toArray(function (err, docs) {
                         if (err) {
                             console.log('catFind - findAllFromDb error');
                             console.log(err);
@@ -407,11 +466,11 @@ function findNearUsers(position, findNearUsersCallback)
                 function (collection, callback) {
                     log("findNearUsers wtf 3");
                 
-                    var locateContraint = {
+                    var locateConstraint = {
                         "userlocate.lon": { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff },
                         "userlocate.lat": { "$gte": position.lat - gpsDiff, "$lte": position.lat + gpsDiff }
                     }
-                    collection.find(locateContraint).toArray(function (err, docs) {
+                    collection.find(locateConstraint).toArray(function (err, docs) {
                         if (err) {
                             console.log('UserFind - findAllFromDb error');
                             console.log(err);
@@ -601,42 +660,42 @@ function findStoreItem(condition, findStoreItemCallback)
         }
     //})
 }
-/*
-myuser = new Object();
-myuser['userid'] = '12345'
-myuser['userpw'] = 'password'
-myuser['userprofile'] = new Object();
-myuser['userprofile']['name'] = 'TestName'
-myuser['userprofile']['age'] = 'TestAge'
-myuser['userinfo'] = new Object();
-myuser['userinfo']['catfam'] = new Array();
-myuser['userinfo']['catfam'].push('CatName1')
-myuser['userinfo']['catfam'].push('CatName2')
-/*addUser(myuser, function (result) {
-    console.log(result);
-})*/
-/*
-mycat = new Object();
-mycat['catid'] = '12345'
-mycat['catpw'] = 'password'
-mycat['catprofile'] = new Object();
-mycat['catprofile']['name'] = 'TestName'
-mycat['catprofile']['age'] = 'TestAge'
-mycat['catinfo'] = new Object();
-mycat['catinfo']['catfam'] = new Array();
-mycat['catinfo']['catfam'].push('CatName1')
-mycat['catinfo']['catfam'].push('CatName2')
-mycat['catlocate'] = new Object();
-mycat['catlocate']['lon'] = '143.245345';
-mycat['catlocate']['lat'] = '51.243';
 
-mypos = new Object();
-mypos['lon'] = 143.245343
-mypos['lat'] = 51.244
-addCat(mycat, function (result) {
-    console.log(result);
-    findNearCats(mypos, function (docs) {
-        console.log(docs);
-    })
-})
-*/
+
+
+function findItemByID(itemID)
+{
+    try {
+        async.waterfall([
+            function (callback) {
+                log("findItemByID wtf 2");
+                db.collection('storeCollection', function (err, collection) {
+                    if (err) return callback(err);
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("findItemByID wtf 3");
+                collection.find({'itemID':itemID}).toArray(function (err, docs) {
+                    if (err) {
+                        console.log('findByItemID error');
+                        console.log(err);
+                        if (callback != null) return callback(err);
+                    }
+                    else {
+                        if (callback != null) callback(null, docs);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                log("findItemByID end");
+                if (err) throw err; else log(result);
+                if (!err) findStoreItemCallback(null, result[0]);
+            });
+    } catch (err) {
+        log("findItemByID error");
+        log(err);
+        findStoreItemCallback(err, null);
+    }
+}

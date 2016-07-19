@@ -59,10 +59,29 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('userInfo', function (info) {
         var userid = info.ID
-
+        mydb.loadUserData({'ID':userid}, function (err, user) {
+            if (err) { console.log(err); }
+            else {
+                io.to(socket.id).emit('userInfoRes', user);
+                console.log('userInfoRes to ' + socket.id);
+                console.log(user);
+            }
+        });
     })
 
+    socket.on('catInfo', function (info) {
+        var catname = info.catName
+        mydb.loadCatData(catname, function (err, cat) {
+            if (err) { console.log(err); }
+            else {
+                io.to(socket.id).emit('catInfoRes', cat);
+                console.log('catInfoRes to ' + socket.id);
+                console.log(cat);
+            }
+        });
+    })
 
+    
 
     //여기서부터는 admin용
     socket.on('admin_addCat', function (data) {
