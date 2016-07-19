@@ -32,9 +32,10 @@ io.sockets.on('connection', function (socket) {
         console.log('heartbeat called by' + socket.id)
         console.log(JSON.stringify(data))
         var lon = Number(data.lon); var lat = Number(data.lat);
-        var change = { 'userlocate.lat': lat, 'userlocate.lon': lon }
+        newlocate = new Object(); newlocate['lat'] = lat; newlocate['lon'] = lon;
+        var change = { userlocate : newlocate }
         mydb.loadUserData({ID:data.id}, function(err, user){
-            mydb.updateUserData(data.id, change, function (result) {
+            mydb.updateUserData(data.id, change, function (err, result) {
                 console.log('findNearAll called with ' + JSON.stringify(result))
                 mydb.fineNearAll(data, function (nearData) {
                     io.to(socket.id).emit('heartbeatRes', nearData);

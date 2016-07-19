@@ -439,7 +439,7 @@ function updateUserData(userid, change, updateUserDataCallback)
             },
             function (collection, callback) {
                 log("updateUserData wtf 3");
-                collction.findAndModify({userid: userid }, [['userid', userid]], { $set: change }, { new: true, upsert: true }, function (err, doc) {
+                collction.findAndModify({userid: userid }, [['userid', userid]], { $set: change }, { new: true}, function (err, doc) {
                     if (err) {
                         console.log('updateUser error');
                         console.log(err);
@@ -455,12 +455,12 @@ function updateUserData(userid, change, updateUserDataCallback)
                 if (err) throw err;
                 else log(result);
                 db.close();
-                if (!err) updateUserDataCallback(result);
+                if (!err) updateUserDataCallback(null, result);
             });
     } catch (err) {
         log("updateUserData error");
         log(err);
-        updateUserDataCallback('updateUserData error occured');
+        updateUserDataCallback(err, null);
     }
 }
 
