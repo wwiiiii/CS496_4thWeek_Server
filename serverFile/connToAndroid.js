@@ -48,6 +48,10 @@ io.sockets.on('connection', function (socket) {
     socket.on('store', function (condition) {
         console.log('store called')
         console.log(JSON.stringify(condition))
+        if (!condition.hasOwnProperty('food')) condition['food'] = false
+        if (!condition.hasOwnProperty('snack')) condition['snack'] = false
+        if (!condition.hasOwnProperty('toy')) condition['toy'] = false
+        if (!condition.hasOwnProperty('etc')) condition['etc'] = false
         mydb.findStoreItem(condition, function (err, itemData) {
             io.to(socket.id).emit('storeRes', itemData);
         })
