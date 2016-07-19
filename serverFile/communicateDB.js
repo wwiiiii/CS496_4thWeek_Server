@@ -19,16 +19,19 @@ var MongoClient = require('mongodb').MongoClient;
 var async = require('async');
 var server = new mongodb.Server(server_ip, 27017, { auto_reconnect: true });
 var log = console.log;
-
 var gpsDiff = 0.5
-
+var db = ''
+MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (err, firstdb) {
+    if(err) return console.log('First open error')
+    db = firstdb
+})
 
 function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 유저 데이터 JSON 정보
 {
     userid = userConstraint.ID
     username = userConstraint.name
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    ////MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        ////if(errR) return console.log(errR)
         try {
             async.waterfall([
                 function (callback) {
@@ -88,7 +91,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                     log("loadUserData end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) loadUserDataCallback(null, result);
                 });
         } catch (err) {
@@ -96,13 +99,13 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
             log(err);
             loadUserDataCallback(err, null);
         }
-    })
+   // })
 }
 
 //나중에 중복 유저가 있는지 검사 루틴 추가
 function addUser(user, addUserCallback) {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         try {
             async.waterfall([
                 function (callback) {
@@ -136,7 +139,7 @@ function addUser(user, addUserCallback) {
                     log("addUser end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) addUserCallback(null, result);
                 });
         } catch (err) {
@@ -144,13 +147,13 @@ function addUser(user, addUserCallback) {
             log(err);
             addUserCallback(err, null);
         }
-    })
+   // })
 }
 
 function removeUser(contraints, removeUserCallback)
 {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         try {
             async.waterfall([
                 function (callback) {
@@ -186,7 +189,7 @@ function removeUser(contraints, removeUserCallback)
                     log("removeUser end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) removeUserCallback(result);
                 });
         } catch (err) {
@@ -194,13 +197,13 @@ function removeUser(contraints, removeUserCallback)
             log(err);
             removeUserCallback('removeUser error occured');
         }
-    })
+   // })
 }
 
 function addCat(cat, addCatCallback)
 {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         try {
             async.waterfall([
                 function (callback) {
@@ -234,7 +237,7 @@ function addCat(cat, addCatCallback)
                     log("addCat end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) addCatCallback(result);
                 });
         } catch (err) {
@@ -242,12 +245,12 @@ function addCat(cat, addCatCallback)
             log(err);
             addCatCallback('addCat error occured');
         }
-    })
+    //})
 }
 
 function removeCat(contraints, removeCatCallback) {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         try {
             async.waterfall([
                 function (callback) {
@@ -283,7 +286,7 @@ function removeCat(contraints, removeCatCallback) {
                     log("removeCat end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) removeCatCallback(result);
                 });
         } catch (err) {
@@ -291,14 +294,14 @@ function removeCat(contraints, removeCatCallback) {
             log(err);
             removeCatCallback('removeCat error occured');
         }
-    })
+    //})
 }
 
 
 function findNearAll(position, findNearAllCallback)
 {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         res = []
         position.lon = Number(position.lon)
         position.lat = Number(position.lat)
@@ -324,13 +327,13 @@ function findNearAll(position, findNearAllCallback)
             if (err) { console.log('findNearAll err : ' + err); findNearAllCallback(null); }
             else findNearAllCallback(res);
         });
-    })
+    //})
 }
 
 function findNearCats(position, findNearCatsCallback)//callback 인자는 주변 고양이들 정보
 {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         try {
             async.waterfall([
                 function (callback) {
@@ -369,7 +372,7 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
                     log("findNearCats end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) findNearCatsCallback(null , result);
                 });
         } catch (err) {
@@ -377,14 +380,14 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
             log(err);
             findNearCatsCallback(err, null);
         }
-    })
+   // })
 
 }
 
 function findNearUsers(position, findNearUsersCallback)
 {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         try {
             async.waterfall([
                 function (callback) {
@@ -424,7 +427,7 @@ function findNearUsers(position, findNearUsersCallback)
                     log("findNearUsers end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) findNearUsersCallback(null, result);
                 });
         } catch (err) {
@@ -432,7 +435,7 @@ function findNearUsers(position, findNearUsersCallback)
             log(err);
             findNearUsersCallback(err, null);
         }
-    })
+    //})
 }
 
 function findNearShop(position, findNearShopCallback)
@@ -444,8 +447,8 @@ function findNearShop(position, findNearShopCallback)
 
 function updateUserData(myid, change, updateUserDataCallback)
 {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         console.log('updateUserData change with ' + JSON.stringify(change))
         try {
             async.waterfall([
@@ -476,7 +479,7 @@ function updateUserData(myid, change, updateUserDataCallback)
                     log("updateUserData end");
                     if (err) throw err;
                     else log(result['result']);
-                    db.close();
+                    //db.close();
                     if (!err) updateUserDataCallback(null, result);
                 });
         } catch (err) {
@@ -484,12 +487,12 @@ function updateUserData(myid, change, updateUserDataCallback)
             log(err);
             updateUserDataCallback(err, null);
         }
-    })
+   // })
 }
 
 function addStoreItem(item, addStoreItemCallback) {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         try {
             async.waterfall([
                 function (callback) {
@@ -523,7 +526,7 @@ function addStoreItem(item, addStoreItemCallback) {
                     log("addStoreItem end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) addStoreItemCallback(null, result);
                 });
         } catch (err) {
@@ -531,14 +534,14 @@ function addStoreItem(item, addStoreItemCallback) {
             log(err);
             addStoreItemCallback(err, null);
         }
-    })
+    //})
 }
 
 //return value is JSONArray of items
 function findStoreItem(condition, findStoreItemCallback)
 {
-    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        if(errR) return console.log(errR)
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        //if(errR) return console.log(errR)
         try {
             async.waterfall([
                 /*function (callback) {
@@ -588,7 +591,7 @@ function findStoreItem(condition, findStoreItemCallback)
                     log("findStoreItem end");
                     if (err) throw err;
                     else log(result);
-                    db.close();
+                    //db.close();
                     if (!err) findStoreItemCallback(null, result);
                 });
         } catch (err) {
@@ -596,7 +599,7 @@ function findStoreItem(condition, findStoreItemCallback)
             log(err);
             findStoreItemCallback(err, null);
         }
-    })
+    //})
 }
 /*
 myuser = new Object();

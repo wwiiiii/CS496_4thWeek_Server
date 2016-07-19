@@ -16,9 +16,11 @@
   <body>
     <ul id="messages"></ul>
     <form action="">
-      <input type="text" id="itemname" placeholder="itemname" />
-      <input type="text" id="itemcost" placeholder="itemcost" />
+      <input type="text" id="itemID" placeholder="itemID" />
+      <input type="text" id="itemName" placeholder="itemName" />
+      <input type="number" id="itemcost" placeholder="itemcost" />
       <input type="text" id="drawable" placeholder="drawable" />
+      <input type="number" id="efficacy" placeholder="efficacy" />
       <input type="text" id="itemcatalog" placeholder="itemcatalog" />
       <button>Add</button>
     </form>
@@ -28,9 +30,11 @@
       var socket = io('http://52.78.66.95:8124');
       $('form').submit(function () {
           var item = new Object()
-          item.itemname = $('#itemname').val()
+          item.itemID = $('#itemID').val()
+          item.itemName = $('#itemName').val()
           item.itemcost = Number($('#itemcost').val())
           item.drawable = $('#drawable').val()
+          item.efficacy = Number($('#efficacy').val())
           item.itemcatalog = $('#itemcatalog').val()
         socket.emit('admin_addStoreItem', item);
         return false;

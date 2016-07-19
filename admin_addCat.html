@@ -16,7 +16,9 @@
   <body>
     <ul id="messages"></ul>
     <form action="">
-      <input type="text" id="catname" placeholder="catname" />
+        <input type="text" id="catid" placeholder="catid" />
+      <input type="text" id="catName" placeholder="catName" />
+        <input type="number" id="catAge" placeholder="catAge" />
       <input type="text" id="catlocate_lon" placeholder="lon" />
       <input type="text" id="catlocate_lat" placeholder="lat" />
       <input type="text" id="catstatus" placeholder="status" />
@@ -28,11 +30,13 @@
       var socket = io('http://52.78.66.95:8124');
       $('form').submit(function () {
           var cat = new Object()
-          cat.catname = $('#catname').val()
+          cat.catName = $('#catName').val()
           cat.catlocate = new Object()
           cat.catlocate.lon = $('#catlocate_lon').val()
           cat.catlocate.lat = $('#catlocate_lat').val()
           cat.catstatus = $('#catstatus').val()
+          cat.catAge = Number($('#catAge').val())
+          cat.catRank = []
         socket.emit('admin_addCat', cat);
         return false;
       });
