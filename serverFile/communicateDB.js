@@ -24,6 +24,9 @@ var gpsDiff = 0.5
 
 function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 유저 데이터 JSON 정보
 {
+    userid = userConstraint.ID
+    username = userConstraint.name
+
     try {
         async.waterfall([
             function (callback) {
@@ -62,11 +65,14 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
             function (collection, docs, callback) {
                 if (docs.length > 0) callback(null, docs[0]);
                 else {
-                    newuser = new Object(); newuser.userid = userConstraint.id;
-                    newuser.userprofile = new Object()
-                    newuser.userprofile.name = userConstraint.name;
+                    newuser = new Object(); newuser.userid = userid;
                     newuser.userlocate = new Object()
-                    newuser.userlocate.lat = 0.0; newuser.userlocate.lon = 0.
+                    newuser.userlocate.lat = 0.0; newuser.userlocate.lon = 0.0;
+                    newuser.userInfo = new Object()
+                    newuser.userInfo.name = username; newuser.userInfo.money = 5000;
+                    newuser.userRank = new Array()
+                    newuser.userItem = new Array()
+
                     addUser(newuser, function(err, addres){
                         if (err != null) callback(err, null);
                         else {

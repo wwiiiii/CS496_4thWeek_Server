@@ -3,7 +3,6 @@ var app = http.createServer(handler);
 var io = require('socket.io').listen(app);
 var fs = require('fs');
 var mydb = require('./communicateDB');
-var clients = {};
 var server_port = 8124;
 app.listen(server_port, function () { console.log('start listen');});
 
@@ -13,15 +12,12 @@ function handler(req, res) {
 }
 
 io.sockets.on('connection', function (socket) {
-    var clie = new Object();
-    clients[socket.id] = clie;
 
     socket.on('init', function (loginStatus) {
         mydb.loadUserData(loginStatus, function (err, user) {
             if (err) { console.log(err); }
             else {
                 io.to(socket.id).emit('initRes', user);
-                clients[socket.id].user = user;
                 console.log('initRes to ' + socket.id);
                 console.log(user);
             }
@@ -30,13 +26,14 @@ io.sockets.on('connection', function (socket) {
         console.log('with loginStatus : ' + JSON.stringify(loginStatus));
     });
 
+    //input  : {id : ~~, lat : ~~, lon: ~~}
+    //output : 
     socket.on('heartbeat', function (data) {
         console.log('heartbeat called by' + socket.id)
+        console.log(JSON.stringify(data))
         var lon = Number(data.lon); var lat = Number(data.lat);
-        clients[socket.id].user.userlocate.lat = lat;
-        clients[socket.id].user.userlocate.lon = lon;
         var change = {'userlocate.lat':lat, 'userlocate.lon':lon}
-        mydb.updateUserData(clients[socket.id].user.userid, change, function (result) {
+        mydb.updateUserData(data.id, change, function (result) {
             mydb.fineNearAll(data, function (nearData) {
                 io.to(socket.id).emit('heartbeatRes', nearData);
             })
@@ -45,6 +42,8 @@ io.sockets.on('connection', function (socket) {
 
     //해당 조건에 맞는 상점 아이템들을 검색해줌
     socket.on('store', function (condition) {
+        console.log('store called')
+        console.log(JSON.stringify(condition))
         mydb.findStoreItem(condition, function (err, itemData) {
             io.to(socket.id).emit('storeRes', itemData);
         })
@@ -88,10 +87,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log('disconnet');
         console.log(socket.id);
-        delete clients[socket.id];
-        socket.off('init'); socket.off('heartbeat'); socket.off('store');
+        /*socket.off('init'); socket.off('heartbeat'); socket.off('store');
         socket.off('userinfo'); socket.off('admin_addCat'); socket.off('admin_addStoreItem');
-        socket.off('admin_findNear'); socket.off('admin_findStoreItem');
+        socket.off('admin_findNear'); socket.off('admin_findStoreItem');*/
         console.log("");
     });
 });
