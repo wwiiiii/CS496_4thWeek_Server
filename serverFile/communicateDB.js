@@ -537,7 +537,7 @@ function findStoreItem(condition, findStoreItemCallback)
                         else callback(null, db);
                     });
                 },*/
-                function (db, callback) {
+                function (callback) {
                     log("findStoreItem wtf 2");
                     db.collection('storeCollection', function (err, collection) {
                         if (err) return callback(err);
@@ -548,17 +548,19 @@ function findStoreItem(condition, findStoreItemCallback)
                     log("findStoreItem wtf 3");
                     consArr = [];
                     consArr.push({ 'itemcatalog': 'foo' })
-                    console.log(Boolean(conditon.food))
-                    console.log(Boolean(conditon.etc))
-                    console.log(Boolean(conditon.toy))
-                    console.log(Boolean(conditon.snack))
-                    if (Boolean(condition.food) == true) consArr.push({ 'itemcatalog': 'food' })
-                    if (Boolean(condition.etc) == true) consArr.push({ 'itemcatalog': 'etc' })
-                    if (Boolean(condition.toy) == true) consArr.push({ 'itemcatalog': 'toy' })
-                    if (Boolean(condition.snack) == true) consArr.push({ 'itemcatalog': 'snack' })
-                    var optionConstraint = new Object()
-                    optionConstraint['$or'] = consArr
-                    console.log(optionConstraint)
+                    try {
+                        console.log(Boolean(conditon.food))
+                        console.log(Boolean(conditon.etc))
+                        console.log(Boolean(conditon.toy))
+                        console.log(Boolean(conditon.snack))
+                        if (Boolean(condition.food) == true) consArr.push({ 'itemcatalog': 'food' })
+                        if (Boolean(condition.etc) == true) consArr.push({ 'itemcatalog': 'etc' })
+                        if (Boolean(condition.toy) == true) consArr.push({ 'itemcatalog': 'toy' })
+                        if (Boolean(condition.snack) == true) consArr.push({ 'itemcatalog': 'snack' })
+                        var optionConstraint = new Object()
+                        optionConstraint['$or'] = consArr
+                        console.log(optionConstraint)
+                    } catch (err) { console.log('wtf 3 err'); console.log(err);}
                     collection.find(optionConstraint).toArray(function (err, docs) {
                         if (err) {
                             console.log('storeFind - findAllFromDb error');
