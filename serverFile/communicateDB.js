@@ -42,7 +42,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
             },
             function (collection, callback) {
                 log("loadUserData wtf 3");
-                console.log(userConstraint.name)
+                //console.log(userConstraint.name)
                 console.log(userConstraint.id)
                 mycons = {userid:userConstraint.id}
                 collection.find(mycons).toArray(function (err, docs) {
@@ -110,10 +110,6 @@ function addUser(user, addUserCallback) {
             },
             function (collection, callback) {
                 log("addUser wtf 3");
-               /* mycon.insertToDb(collection, user, function (err) {
-                    if (err == null) callback(null, collection);
-                    else callback(err, null);
-                });*/
                 collection.insert(user, function (err, res) {
                     if (err) {
                         console.log('insertToDb error');

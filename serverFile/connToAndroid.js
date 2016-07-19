@@ -31,6 +31,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('heartbeat', function (data) {
+        console.log('heartbeat called by' + socket.id)
         var lon = Number(data.lon); var lat = Number(data.lat);
         clients[socket.id].user.userlocate.lat = lat;
         clients[socket.id].user.userlocate.lon = lon;
@@ -44,13 +45,13 @@ io.sockets.on('connection', function (socket) {
 
     //해당 조건에 맞는 상점 아이템들을 검색해줌
     socket.on('store', function (condition) {
-        mydb.findStoreItem(data, function (err, itemData) {
+        mydb.findStoreItem(condition, function (err, itemData) {
             io.to(socket.id).emit('storeRes', itemData);
         })
     })
 
-    socket.on('userinfo', function (info) {
-        var userid = info.id
+    socket.on('userInfo', function (info) {
+        var userid = info.ID
 
     })
 
@@ -88,6 +89,9 @@ io.sockets.on('connection', function (socket) {
         console.log('disconnet');
         console.log(socket.id);
         delete clients[socket.id];
+        socket.off('init'); socket.off('heartbeat'); socket.off('store');
+        socket.off('userinfo'); socket.off('admin_addCat'); socket.off('admin_addStoreItem');
+        socket.off('admin_findNear'); socket.off('admin_findStoreItem');
         console.log("");
     });
 });
