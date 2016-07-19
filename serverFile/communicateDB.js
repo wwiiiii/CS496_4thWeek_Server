@@ -470,21 +470,12 @@ function updateUserData(myid, change, updateUserDataCallback)
                             console.log('updateUser error'); console.log(err); return callback(err);
                         } else { callback(null, doc); }
                     })
-                    /*collction.findAndModify({userid: userid }, [['userid', userid]], { $set: change }, { new: true}, function (err, doc) {
-                        if (err) {
-                            console.log('updateUser error');
-                            console.log(err);
-                            callback(err);
-                        } else {
-                            callback(null, doc);
-                        }
-                    })*/
                 }
             ],
                 function (err, result) {
                     log("updateUserData end");
                     if (err) throw err;
-                    else log(result);
+                    else log(result['result']);
                     db.close();
                     if (!err) updateUserDataCallback(null, result);
                 });
