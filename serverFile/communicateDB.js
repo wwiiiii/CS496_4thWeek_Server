@@ -15,6 +15,7 @@
 var mycon = require('./connToMongo');
 var server_ip = 'localhost';
 var mongodb = require('mongodb');
+var MongoClient = require('mongodb').MongoClient;
 var async = require('async');
 var server = new mongodb.Server(server_ip, 27017, { auto_reconnect: true });
 var log = console.log;
@@ -525,62 +526,64 @@ function addStoreItem(item, addStoreItemCallback) {
 //return value is JSONArray of items
 function findStoreItem(condition, findStoreItemCallback)
 {
-    var db = new mongodb.Db('kaistGoDB', server);
-    try {
-        async.waterfall([
-            function (callback) {
-                log("findStoreItem wtf 1");
-                db.open(function (err, db) {
-                    if (err) return callback(err);
-                    else callback(null, db);
+    MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+        if(errR) return console.log(errR)
+        try {
+            async.waterfall([
+                function (callback) {
+                    log("findStoreItem wtf 1");
+                    db.open(function (err, db) {
+                        if (err) return callback(err);
+                        else callback(null, db);
+                    });
+                },
+                function (db, callback) {
+                    log("findStoreItem wtf 2");
+                    db.collection('storeCollection', function (err, collection) {
+                        if (err) return callback(err);
+                        else callback(null, collection);
+                    });
+                },
+                function (collection, callback) {
+                    log("findStoreItem wtf 3");
+                    consArr = [];
+                    consArr.push({ 'itemcatalog': 'foo' })
+                    console.log(Boolean(conditon.food))
+                    console.log(Boolean(conditon.etc))
+                    console.log(Boolean(conditon.toy))
+                    console.log(Boolean(conditon.snack))
+                    if (Boolean(condition.food) == true) consArr.push({ 'itemcatalog': 'food' })
+                    if (Boolean(condition.etc) == true) consArr.push({ 'itemcatalog': 'etc' })
+                    if (Boolean(condition.toy) == true) consArr.push({ 'itemcatalog': 'toy' })
+                    if (Boolean(condition.snack) == true) consArr.push({ 'itemcatalog': 'snack' })
+                    var optionConstraint = new Object()
+                    optionConstraint['$or'] = consArr
+                    console.log(optionConstraint)
+                    collection.find(optionConstraint).toArray(function (err, docs) {
+                        if (err) {
+                            console.log('storeFind - findAllFromDb error');
+                            console.log(err);
+                            if (callback != null) return callback(err);
+                        }
+                        else {
+                            if (callback != null) callback(null, docs);
+                        }
+                    });
+                }
+            ],
+                function (err, result) {
+                    log("findStoreItem end");
+                    if (err) throw err;
+                    else log(result);
+                    db.close();
+                    if (!err) findStoreItemCallback(null, result);
                 });
-            },
-            function (db, callback) {
-                log("findStoreItem wtf 2");
-                db.collection('storeCollection', function (err, collection) {
-                    if (err) return callback(err);
-                    else callback(null, collection);
-                });
-            },
-            function (collection, callback) {
-                log("findStoreItem wtf 3");
-                consArr = [];
-                consArr.push({ 'itemcatalog': 'foo' })
-                console.log(Boolean(conditon.food))
-                console.log(Boolean(conditon.etc))
-                console.log(Boolean(conditon.toy))
-                console.log(Boolean(conditon.snack))
-                if (Boolean(condition.food) == true) consArr.push({ 'itemcatalog': 'food' })
-                if (Boolean(condition.etc) == true) consArr.push({ 'itemcatalog': 'etc' })
-                if (Boolean(condition.toy) == true) consArr.push({ 'itemcatalog': 'toy' })
-                if (Boolean(condition.snack) == true) consArr.push({ 'itemcatalog': 'snack' })
-                var optionConstraint = new Object()
-                optionConstraint['$or'] = consArr
-                console.log(optionConstraint)
-                collection.find(optionConstraint).toArray(function (err, docs) {
-                    if (err) {
-                        console.log('storeFind - findAllFromDb error');
-                        console.log(err);
-                        if (callback != null) return callback(err);
-                    }
-                    else {
-                        if (callback != null) callback(null, docs);
-                    }
-                });
-            }
-        ],
-            function (err, result) {
-                log("findStoreItem end");
-                if (err) throw err;
-                else log(result);
-                db.close();
-                if (!err) findStoreItemCallback(null, result);
-            });
-    } catch (err) {
-        log("findStoreItem error");
-        log(err);
-        findStoreItemCallback(err, null);
-    }
+        } catch (err) {
+            log("findStoreItem error");
+            log(err);
+            findStoreItemCallback(err, null);
+        }
+    })
 }
 /*
 myuser = new Object();
