@@ -32,14 +32,14 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
             function (callback) {
                 log("loadUserData wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err);
+                    if (err) return callback(err);
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("loadUserData wtf 2");
                 db.collection('userCollection', function (err, collection) {
-                    if (err) callback(err);
+                    if (err) return callback(err);
                     else callback(null, collection);
                 });
             },
@@ -53,7 +53,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                     if (err) {
                         console.log('loadUser - findAllFromDb error');
                         console.log(err);
-                        callback(err);
+                        return callback(err);
                     }
                     else {
                         console.log('loadUserFindRes')
@@ -74,7 +74,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                     newuser.userItem = new Array()
 
                     addUser(newuser, function(err, addres){
-                        if (err != null) callback(err, null);
+                        if (err != null) return callback(err, null);
                         else {
                             callback(null, newuser);
                         }
@@ -103,14 +103,14 @@ function addUser(user, addUserCallback) {
             function (callback) {
                 log("addUser wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'wtf 1 error');
+                    if (err) return callback(err, 'wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("addUser wtf 2");
                 db.collection('userCollection', function (err, collection) {
-                    if (err) callback(err, 'wtf 2 err');
+                    if (err) return callback(err, 'wtf 2 err');
                     else callback(null, collection);
                 });
             },
@@ -120,7 +120,7 @@ function addUser(user, addUserCallback) {
                     if (err) {
                         console.log('insertToDb error');
                         console.log(err);
-                        callback(err);
+                        return callback(err);
                     } else {
                         callback(null);
                     }
@@ -148,14 +148,14 @@ function removeUser(contraints, removeUserCallback)
             function (callback) {
                 log("removeUser wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'removeUser wtf 1 error');
+                    if (err) return callback(err, 'removeUser wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("removeUser wtf 2");
                 db.collection('userCollection', function (err, collection) {
-                    if (err) callback(err, 'removeUser wtf 2 err');
+                    if (err) return callback(err, 'removeUser wtf 2 err');
                     else callback(null, collection);
                 });
             },
@@ -167,7 +167,7 @@ function removeUser(contraints, removeUserCallback)
                  });*/
                 collection.deleteMany(constraints, function (err, res) {
                     if (err) {
-                        console.log('deleteMany error');console.log(err);callback(err);
+                        console.log('deleteMany error'); console.log(err); return callback(err);
                     } else {
                         callback(null);
                     }
@@ -195,14 +195,14 @@ function addCat(cat, addCatCallback)
             function (callback) {
                 log("addCat wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'addCat wtf 1 error');
+                    if (err) return callback(err, 'addCat wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("addCat wtf 2");
                 db.collection('catCollection', function (err, collection) {
-                    if (err) callback(err, 'addCat wtf 2 err');
+                    if (err) return callback(err, 'addCat wtf 2 err');
                     else callback(null, collection);
                 });
             },
@@ -212,7 +212,7 @@ function addCat(cat, addCatCallback)
                     if (err) {
                         console.log('insertToDb error');
                         console.log(err);
-                        callback(err);
+                        return callback(err);
                     } else {
                         callback(null);
                     }
@@ -239,14 +239,14 @@ function removeCat(contraints, removeCatCallback) {
             function (callback) {
                 log("removeCat wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'removeCat wtf 1 error');
+                    if (err) return callback(err, 'removeCat wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("removeCat wtf 2");
                 db.collection('catCollection', function (err, collection) {
-                    if (err) callback(err, 'removeCat wtf 2 err');
+                    if (err) return callback(err, 'removeCat wtf 2 err');
                     else callback(null, collection);
                 });
             },
@@ -258,7 +258,7 @@ function removeCat(contraints, removeCatCallback) {
                  });*/
                 collection.deleteMany(constraints, function (err, res) {
                     if (err) {
-                        console.log('deleteMany error'); console.log(err); callback(err);
+                        console.log('deleteMany error'); console.log(err); return callback(err);
                     } else {
                         callback(null);
                     }
@@ -288,14 +288,14 @@ function findNearAll(position, findNearAllCallback)
     async.waterfall([
         function (callback) {
             findNearCats(position, function(errr, result){
-                if (errr != null) callback(errr)
+                if (errr != null) return callback(errr)
                 else callback(null, result)
             })
         },
         function(catinfo, callback){
             res = res.concat(catinfo)
             findNearUsers(position, function(errr, result){
-                if (errr != null) callback(errr)
+                if (errr != null) return callback(errr)
                 else callback(null, result)
             })    
         },
@@ -316,14 +316,14 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
             function (callback) {
                 log("findNearCats wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'findNearCats wtf 1 error');
+                    if (err) return callback(err, 'findNearCats wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("findNearCats wtf 2");
                 db.collection('catCollection', function (err, collection) {
-                    if (err) callback(err, 'findNearCats wtf 2 err');
+                    if (err) return callback(err, 'findNearCats wtf 2 err');
                     else callback(null, collection);
                 });
             },
@@ -337,7 +337,7 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
                     if (err) {
                         console.log('catFind - findAllFromDb error');
                         console.log(err);
-                        if (callback != null) callback(err);
+                        if (callback != null) return callback(err);
                     }
                     else {
                         if (callback != null) callback(null, docs);
@@ -367,14 +367,14 @@ function findNearUsers(position, findNearUsersCallback)
             function (callback) {
                 log("findNearUsers wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'findNearUsers wtf 1 error');
+                    if (err) return callback(err, null);
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("findNearUsers wtf 2");
                 db.collection('userCollection', function (err, collection) {
-                    if (err) callback(err, 'findNearUsers wtf 2 err');
+                    if (err) return callback(err, null);
                     else callback(null, collection);
                 });
             },
@@ -389,7 +389,7 @@ function findNearUsers(position, findNearUsersCallback)
                     if (err) {
                         console.log('UserFind - findAllFromDb error');
                         console.log(err);
-                        if (callback != null) callback(err);
+                        if (callback != null) return callback(err);
                     }
                     else {
                         if (callback != null) callback(null, docs);
@@ -426,14 +426,14 @@ function updateUserData(myid, change, updateUserDataCallback)
             function (callback) {
                 log("updateUserData wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'wtf 1 error');
+                    if (err) return callback(err, 'wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("updateUserData wtf 2");
                 db.collection('userCollection', function (err, collection) {
-                    if (err) callback(err, 'wtf 2 err');
+                    if (err) return callback(err, 'wtf 2 err');
                     else callback(null, collection);
                 });
             },
@@ -441,7 +441,7 @@ function updateUserData(myid, change, updateUserDataCallback)
                 log("updateUserData wtf 3");
                 collection.update({ userid: myid }, { $set: change }, { w: 1 }, function (err, doc) {
                     if (err) {
-                        console.log('updateUser error'); console.log(err); callback(err);
+                        console.log('updateUser error'); console.log(err); return callback(err);
                     } else { callback(null, doc); }
                 })
                 /*collction.findAndModify({userid: userid }, [['userid', userid]], { $set: change }, { new: true}, function (err, doc) {
@@ -475,14 +475,14 @@ function addStoreItem(item, addStoreItemCallback) {
             function (callback) {
                 log("addStoreItem wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'addStoreItem wtf 1 error');
+                    if (err) return callback(err, null);
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("addStoreItem wtf 2");
                 db.collection('storeCollection', function (err, collection) {
-                    if (err) callback(err, 'addStoreItem wtf 2 err');
+                    if (err) return callback(err, null);
                     else callback(null, collection);
                 });
             },
@@ -492,7 +492,7 @@ function addStoreItem(item, addStoreItemCallback) {
                     if (err) {
                         console.log('insertToDb error');
                         console.log(err);
-                        callback(err);
+                        return callback(err);
                     } else {
                         callback(null);
                     }
@@ -521,14 +521,14 @@ function findStoreItem(condition, findStoreItemCallback)
             function (callback) {
                 log("findStoreItem wtf 1");
                 db.open(function (err, db) {
-                    if (err) callback(err, 'findStoreItem wtf 1 error');
+                    if (err) return callback(err, 'findStoreItem wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
                 log("findStoreItem wtf 2");
                 db.collection('storeCollection', function (err, collection) {
-                    if (err) callback(err, 'findStoreItem wtf 2 err');
+                    if (err) return callback(err, 'findStoreItem wtf 2 err');
                     else callback(null, collection);
                 });
             },
@@ -551,7 +551,7 @@ function findStoreItem(condition, findStoreItemCallback)
                     if (err) {
                         console.log('storeFind - findAllFromDb error');
                         console.log(err);
-                        if (callback != null) callback(err);
+                        if (callback != null) return callback(err);
                     }
                     else {
                         if (callback != null) callback(null, docs);
