@@ -439,7 +439,7 @@ function updateUserData(myid, change, updateUserDataCallback)
             },
             function (collection, callback) {
                 log("updateUserData wtf 3");
-                collection.update({ userid: myid }, { $set: change }, { w: 1 }, function (err, docs) {
+                collection.update({ userid: myid }, { $set: change }, { w: 1 }, function (err, doc) {
                     if (err) {
                         console.log('updateUser error'); console.log(err); callback(err);
                     } else { callback(null, doc); }

@@ -37,7 +37,7 @@ io.sockets.on('connection', function (socket) {
         mydb.loadUserData({ID:data.id}, function(err, user){
             mydb.updateUserData(data.id, change, function (err, result) {
                 console.log('findNearAll called with ' + JSON.stringify(result))
-                mydb.fineNearAll(data, function (nearData) {
+                mydb.findNearAll(data, function (nearData) {
                     io.to(socket.id).emit('heartbeatRes', nearData);
                 })
             })
