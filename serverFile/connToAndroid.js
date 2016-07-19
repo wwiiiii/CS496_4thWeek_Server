@@ -91,6 +91,11 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log('disconnet');
         console.log(socket.id);
+        strs['init', 'heartbeat', 'store', 'userInfo', 'admin_addCat', 'admin_addStoreItem', 'admin_findNear', 'admin_findStoreItem']
+        for (var i = 0; i < strs.length; i++)
+        {
+            socket.removeAllListeners(strs[i])
+        }
         /*socket.off('init'); socket.off('heartbeat'); socket.off('store');
         socket.off('userinfo'); socket.off('admin_addCat'); socket.off('admin_addStoreItem');
         socket.off('admin_findNear'); socket.off('admin_findStoreItem');*/
