@@ -418,7 +418,7 @@ function findNearShop(position, findNearShopCallback)
 
 }
 
-function updateUserData(userid, change, updateUserDataCallback)
+function updateUserData(myid, change, updateUserDataCallback)
 {
     console.log('updateUserData change with ' + JSON.stringify(change))
     try {
@@ -439,7 +439,12 @@ function updateUserData(userid, change, updateUserDataCallback)
             },
             function (collection, callback) {
                 log("updateUserData wtf 3");
-                collction.findAndModify({userid: userid }, [['userid', userid]], { $set: change }, { new: true}, function (err, doc) {
+                collection.update({ userid: myid }, { $set: change }, { w: 1 }, function (err, docs) {
+                    if (err) {
+                        console.log('updateUser error'); console.log(err); callback(err);
+                    } else { callback(null, doc); }
+                })
+                /*collction.findAndModify({userid: userid }, [['userid', userid]], { $set: change }, { new: true}, function (err, doc) {
                     if (err) {
                         console.log('updateUser error');
                         console.log(err);
@@ -447,7 +452,7 @@ function updateUserData(userid, change, updateUserDataCallback)
                     } else {
                         callback(null, doc);
                     }
-                })
+                })*/
             }
         ],
             function (err, result) {
