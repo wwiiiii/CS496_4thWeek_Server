@@ -63,8 +63,8 @@ io.sockets.on('connection', function (socket) {
         mydb.loadUserData({'ID':userid}, function (err, user) {
             if (err) { console.log(err); }
             else {
-                user.userRank = [{ 'catname': '아름이', 'myrank': 4 }, { 'catname': '치즈냥이', 'myrank': 1 }]
-                user.userItem = [{ 'itemID' : '1', 'itemName': 'Dried', 'itemcost': 3000 }, {'itemID' : 4, 'itemName' : 'Ball', 'itemcost' : 4000}]
+                //user.userRank = [{ 'catname': '아름이', 'myrank': 4 }, { 'catname': '치즈냥이', 'myrank': 1 }]
+                //user.userItem = [{ 'itemID' : '1', 'itemName': 'Dried', 'itemcost': 3000 }, {'itemID' : 4, 'itemName' : 'Ball', 'itemcost' : 4000}]
                 io.to(socket.id).emit('userInfoRes', user);
                 console.log('userInfoRes to ' + socket.id);
                 console.log(user);

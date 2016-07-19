@@ -558,6 +558,51 @@ function updateUserData(myid, change, updateUserDataCallback)
    // })
 }
 
+function updateCatData(catname, change, updateCatDataCallback) {
+    //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
+    //if(errR) return console.log(errR)
+    console.log('updateCatData change with ' + JSON.stringify(change))
+    try {
+        async.waterfall([
+            function (callback) {
+                log("updateCatData wtf 1");
+                db.open(function (err, db) {
+                    if (err) return callback(err, 'wtf 1 error');
+                    else callback(null, db);
+                });
+            },
+            function (db, callback) {
+                log("updateCatData wtf 2");
+                db.collection('catCollection', function (err, collection) {
+                    if (err) return callback(err, 'wtf 2 err');
+                    else callback(null, collection);
+                });
+            },
+            function (collection, callback) {
+                log("updateCatData wtf 3");
+                collection.update({ 'catName': catname }, { $set: change }, { w: 1 }, function (err, doc) {
+                    if (err) {
+                        console.log('updateCat error'); console.log(err); return callback(err);
+                    } else { callback(null, doc); }
+                })
+            }
+        ],
+            function (err, result) {
+                log("updateCatData end");
+                if (err) throw err;
+                else log(result['result']);
+                //db.close();
+                if (!err) updateCatDataCallback(null, result);
+            });
+    } catch (err) {
+        log("updateCatData error");
+        log(err);
+        updateCatDataCallback(err, null);
+    }
+    // })
+}
+
+
 function addStoreItem(item, addStoreItemCallback) {
     //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
         //if(errR) return console.log(errR)
@@ -722,7 +767,7 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                     else {
                         collection.find({ 'userid': userid }).toArray(function (err, docs) {
                             if (err) return callback(err);
-                            else if (docs.length == 0) return callback('No Such User');
+                            else if (docs.length == 0) return callback(null,null);
                             else {
                                 callback(null, docs[0]);
                             }
@@ -741,29 +786,30 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                 log('buyItem wtf 3');
                 console.log('user is ' + JSON.stringify(user))
                 console.log('item is ' + JSON.stringify(item))
-                var nowmoney = Number(user.userInfo.money)
-                var targetmoney = Number(item.itemcost) * Number(cnt)
-                if (nowmoney < targetmoney) {
-                    finres = false
-                } else {
-                    itemarr = user.userItem; var flag = false
-                    for (var i = 0; i < itemarr.length; i++)
-                    {
-                        if (itemarr[i]['itemID'] == itemid) {
-                            itemarr[i]['itemcnt'] += cnt;
-                            flag = true
+                if (user != null) {
+                    var nowmoney = Number(user.userInfo.money)
+                    var targetmoney = Number(item.itemcost) * Number(cnt)
+                    if (nowmoney < targetmoney) {
+                        finres = false
+                    } else {
+                        itemarr = user.userItem; var flag = false
+                        for (var i = 0; i < itemarr.length; i++) {
+                            if (itemarr[i]['itemID'] == itemid) {
+                                itemarr[i]['itemcnt'] += cnt;
+                                flag = true
+                            }
                         }
+                        if (flag == false) {
+                            var temp = item; temp['itemcnt'] = cnt
+                            itemarr.push(temp)
+                        }
+                        finres = true
+                        updateUserData(userid, { 'userInfo.money': nowmoney - targetmoney, 'userItem': itemarr }, function (err, res) {
+                            if (err) return callback(err);
+                            else callback(null, finres)
+                        })
                     }
-                    if (flag == false) {
-                        var temp = item; temp['itemcnt'] = cnt
-                        itemarr.push(temp)
-                    }
-                    finres = true
-                    updateUserData(userid, { 'userInfo.money': nowmoney - targetmoney, 'userItem' : itemarr }, function (err, res) {
-                        if (err) return callback(err);
-                        else callback(null, finres)
-                    })
-                }
+                } else callback(null, false);
             }
         ],
             function (err, result) {
@@ -775,5 +821,91 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
         log("buyItem error");
         log(err);
         buyItemCallback(err, null);
+    }
+}
+
+
+function updateFam(userid, catname, famChange, updateFamCallback)
+{ 
+    try {
+        async.waterfall([
+            function (callback) {
+                log("updateFam wtf 1");//find user info
+                db.collection('userCollection', function (err, collection) {
+                    if (err) return callback(err);
+                    else {
+                        collection.find({ 'userid': userid }).toArray(function (err, docs) {
+                            if (err) return callback(err);
+                            else if (docs.length == 0) return callback(null,null);
+                            else {
+                                callback(null, docs[0]);
+                            }
+                        })
+                    }
+                });
+            },
+            function (user, callback) {
+                log("updateFam wtf 2");
+                db.collection('catCollection', function (err, collection) {
+                    if (err) return callback(err);
+                    else {
+                        collection.find({ 'catName': catname }).toArray(function (err, docs) {
+                            if (err) return callback(err);
+                            else if (docs.length == 0) return callback(null, null);
+                            else {
+                                callback(null, docs[0]);
+                            }
+                        })
+                    }
+                });
+            },
+            function (user, cat, callback) {
+                log('updateFam wtf 3');
+                if (user != null && cat != null) {
+                    console.log('user is ' + JSON.stringify(user))
+                    console.log('item is ' + JSON.stringify(cat))
+                    userarr = user.userRank; userexist = false;
+                    catarr = cat.catRank; catexist = false;
+                    for (var i = 0; i < userarr.length; i++)
+                    {
+                        if (userarr[i]['catname'] == catname)
+                        {
+                            userarr[i]['fam'] = userarr[i]['fam'] + Number(famChange)
+                            userexist = true; break;
+                        }
+                    }
+                    if (userexist == false){
+                        userarr.push({"catname" : catname, "fam" : Number(famChange)})
+                    }
+                    for (var i = 0; i < catarr.length; i++) {
+                        if (catarr[i]['userid'] == userid) {
+                            catarr[i]['fam'] = catarr[i]['fam'] + Number(famChange)
+                            catexist = true; break;
+                        }
+                    }
+                    if (catexist == false) {
+                        catarr.push({ "userid": userid, "fam": Number(famChange) })
+                    }
+                    updateUserData(userid, { 'userRank': userarr}, function (err, res) {
+                        if (err) return callback(err);
+                        else {
+                            updateCatData(catname, { 'catRank': catarr }, function (errr, res) {
+                                if (errr) return callback(errr);
+                                else callback(null, 'update fam succeed');
+                            })
+                        }
+                    })
+                } else callback(null, null)
+            }
+        ],
+            function (err, result) {
+                log("updateFam end");
+                if (err) throw err; else log(result);
+                if (!err) updateFamCallback(null, result);
+            });
+    } catch (err) {
+        log("updateFam error");
+        log(err);
+        updateFamCallback(err, null);
     }
 }
