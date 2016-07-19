@@ -670,7 +670,7 @@ function findStoreItem(condition, findStoreItemCallback)
 
 
 
-function findItemByID(itemID)
+function findItemByID(itemID, findItemByIDCallback)
 {
     try {
         async.waterfall([
@@ -698,11 +698,17 @@ function findItemByID(itemID)
             function (err, result) {
                 log("findItemByID end");
                 if (err) throw err; else log(result);
-                if (!err) findStoreItemCallback(null, result[0]);
+                if (!err) findItemByIDCallback(null, result[0]);
             });
     } catch (err) {
         log("findItemByID error");
         log(err);
-        findStoreItemCallback(err, null);
+        findItemByIDCallback(err, null);
     }
+} 
+
+//유저 정보 로딩 -> 아이템 정보 로딩 -> 구매 가능한지 판단 -> 가능하면 정보 업데이트
+function buyItem(userid, itemid, cnt, buyItemCallback)
+{
+
 }
