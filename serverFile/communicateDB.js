@@ -420,6 +420,7 @@ function findNearShop(position, findNearShopCallback)
 
 function updateUserData(userid, change, updateUserDataCallback)
 {
+    console.log('updateUserData change with ' + JSON.stringify(change))
     try {
         async.waterfall([
             function (callback) {
@@ -438,7 +439,7 @@ function updateUserData(userid, change, updateUserDataCallback)
             },
             function (collection, callback) {
                 log("updateUserData wtf 3");
-                collction.findAndModify({ "userid": userid }, [['userid', userid]], { $set: change }, { new: true, upsert: true }, function (err, doc) {
+                collction.findAndModify({userid: userid }, [['userid', userid]], { $set: change }, { new: true, upsert: true }, function (err, doc) {
                     if (err) {
                         console.log('updateUser error');
                         console.log(err);

@@ -34,6 +34,7 @@ io.sockets.on('connection', function (socket) {
         var lon = Number(data.lon); var lat = Number(data.lat);
         var change = {'userlocate.lat':lat, 'userlocate.lon':lon}
         mydb.updateUserData(data.id, change, function (result) {
+            console.log('findNearAll called with ' + JSON.stringify(result))
             mydb.fineNearAll(data, function (nearData) {
                 io.to(socket.id).emit('heartbeatRes', nearData);
             })
