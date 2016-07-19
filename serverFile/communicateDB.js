@@ -33,6 +33,10 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
     if (userConstraint.hasOwnProperty('id')) userid = userConstraint.id
     if (userConstraint.hasOwnProperty('userid')) userid = userConstraint.userid
     if (userConstraint.hasOwnProperty('name')) username = userConstraint.name
+
+    console.log('id and name is ')
+    console.log(userid)
+    console.log(username)
     ////MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
         ////if(errR) return console.log(errR)
         try {
@@ -164,7 +168,9 @@ function loadCatData(catname, loadCatDataCallback)
 //나중에 중복 유저가 있는지 검사 루틴 추가
 function addUser(user, addUserCallback) {
     //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
-        //if(errR) return console.log(errR)
+    //if(errR) return console.log(errR)
+    console.log('add new user');
+    console.log(JSON.stringify(user));
         try {
             async.waterfall([
                 function (callback) {
