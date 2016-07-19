@@ -738,6 +738,8 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
             },
             function (user, item, callback) {
                 log('buyItem wtf 3');
+                console.log('user is ' + JSON.stringify(user))
+                console.log('item is ' + JSON.stringify(item))
                 var nowmoney = Number(user.userInfo.money)
                 var targetmoney = Number(item.itemcost) * Number(cnt)
                 if (nowmoney < targetmoney) {
