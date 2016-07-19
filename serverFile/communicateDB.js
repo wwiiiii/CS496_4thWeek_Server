@@ -712,6 +712,7 @@ function findItemByID(itemID, findItemByIDCallback)
 //유저 정보 로딩 -> 아이템 정보 로딩 -> 구매 가능한지 판단 -> 가능하면 정보 업데이트
 function buyItem(userid, itemid, cnt, buyItemCallback)
 {
+    finres = true
     try {
         async.waterfall([
             function (callback) {
@@ -743,7 +744,7 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                 var nowmoney = Number(user.userInfo.money)
                 var targetmoney = Number(item.itemcost) * Number(cnt)
                 if (nowmoney < targetmoney) {
-                    return callback('NoMONEY')
+                    finres = false
                 } else {
                     itemarr = user.userItem; var flag = false
                     for (var i = 0; i < itemarr.length; i++)
@@ -757,9 +758,10 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                         var temp = item; temp['itemcnt'] = cnt
                         itemarr.push(temp)
                     }
+                    finres = true
                     updateUserData(userid, { 'userInfo.money': nowmoney - targetmoney, 'userItem' : itemarr }, function (err, res) {
                         if (err) return callback(err);
-                        else callback(null, 'buyItem succed' + String(nowmoney-targetmoney))
+                        else callback(null, finres)
                     })
                 }
             }

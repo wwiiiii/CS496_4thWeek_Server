@@ -87,7 +87,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('buy', function (data) {
         console.log('buy called with ' + JSON.stringify(data))
         mydb.buyItem(data.userid, data.iteminfo.itemID, data.quantity, function (err, res) {
-            if (err) { console.log(err); io.to(socket.id).emit('buyRes', {'isSucceed' : false, 'error' : err}) }
+            if (err || res == false) { console.log(err); io.to(socket.id).emit('buyRes', {'isSucceed' : false, 'error' : err}) }
             else {
                 console.log('buy succeed')
                 io.to(socket.id).emit('buyRes', {'isSucceed' : true, 'error' : null})
