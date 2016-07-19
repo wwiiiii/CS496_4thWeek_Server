@@ -42,14 +42,21 @@ io.sockets.on('connection', function (socket) {
         })
     });
 
-
     //해당 조건에 맞는 상점 아이템들을 검색해줌
     socket.on('store', function (condition) {
+        mydb.findStoreItem(data, function (err, itemData) {
+            io.to(socket.id).emit('storeRes', itemData);
+        })
+    })
 
-
+    socket.on('userinfo', function (info) {
+        var userid = info.id
 
     })
 
+
+
+    //여기서부터는 admin용
     socket.on('admin_addCat', function (data) {
         data.catlocate.lon = Number(data.catlocate.lon)
         data.catlocate.lat = Number(data.catlocate.lat)
