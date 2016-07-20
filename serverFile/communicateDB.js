@@ -891,8 +891,8 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                     }
                     catarr.sort(function (a, b) {
                         var keya = Number(a.fam); var keyb = Number(b.fam);
-                        if (keya > keyb) return 1;
-                        if (keya < keyb) return -1;
+                        if (keya > keyb) return -1;
+                        if (keya < keyb) return 1;
                         return 0;
                     })
                     for (var i = 0; i < catarr.length; i++)
