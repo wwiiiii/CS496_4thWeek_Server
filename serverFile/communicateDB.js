@@ -980,7 +980,7 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                     itemarr = user.userItem; var flag = false; var eff = 0; var itemidx = -1;
                     for (var i = 0; i < itemarr.length; i++) {
                         if (itemarr[i]['itemID'] == itemid) {
-                            if (Number(itemarr[i]['itemcnt']) < cnt) callback(null, false);
+                            if (Number(itemarr[i]['itemcnt']) < cnt) break;
                             //아이템 수량 조정 부분
                             itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt']) - Number(cnt);
                             isItemUsed = true; eff = itemarr[i]['efficacy']; itemidx = i;
@@ -1010,7 +1010,7 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                                     if (erruF) return callback(erruF);
                                     updateUserData(userid, { 'userItem': itemarr }, function (err, res) {
                                         if (err) return callback(err);
-                                        else callback(null, true)
+                                        else callback(null, true);
                                     })
                                 })
                             })
