@@ -855,7 +855,7 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                             if (err) return callback(err);
                             else if (docs.length == 0) return callback(null, null);
                             else {
-                                callback(null, docs[0]);
+                                callback(null, user, docs[0]);
                             }
                         })
                     }
@@ -865,7 +865,7 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                 log('updateFam wtf 3');
                 if (user != null && cat != null) {
                     console.log('user is ' + JSON.stringify(user))
-                    console.log('item is ' + JSON.stringify(cat))
+                    console.log('cat is ' + JSON.stringify(cat))
                     userarr = user.userRank; userexist = false;
                     catarr = cat.catRank; catexist = false; useridx = -1;
                     for (var i = 0; i < userarr.length; i++)
