@@ -795,7 +795,7 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                     var nowmoney = Number(user.userInfo.money)
                     var targetmoney = Number(item.itemcost) * Number(cnt)
                     if (nowmoney < targetmoney) {
-                        finres = false
+                        callback(null, false)
                     } else {
                         itemarr = user.userItem; var flag = false
                         for (var i = 0; i < itemarr.length; i++) {
