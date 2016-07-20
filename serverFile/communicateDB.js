@@ -761,6 +761,7 @@ function findItemByID(itemID, findItemByIDCallback)
 function buyItem(userid, itemid, cnt, buyItemCallback)
 {
     finres = true
+    console.log(String(userid) + ' '+String(itemid) + ' '+String(cnt))
     try {
         async.waterfall([
             function (callback) {
@@ -787,8 +788,8 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
             },
             function (user, item, callback) {
                 if (showWaterfallLog == true) log('buyItem wtf 3');
-                if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
-                if (isVerbose == true) console.log('item is ' + JSON.stringify(item))
+                /*if (isVerbose == true)*/ console.log('user is ' + JSON.stringify(user))
+                /*if (isVerbose == true)*/ console.log('item is ' + JSON.stringify(item))
                 if (user != null) {
                     var nowmoney = Number(user.userInfo.money)
                     var targetmoney = Number(item.itemcost) * Number(cnt)
@@ -798,7 +799,7 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                         itemarr = user.userItem; var flag = false
                         for (var i = 0; i < itemarr.length; i++) {
                             if (itemarr[i]['itemID'] == itemid) {
-                                itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt'] + cnt);
+                                itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt']) + Number(cnt);
                                 flag = true
                             }
                         }
@@ -980,7 +981,7 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                         if (itemarr[i]['itemID'] == itemid) {
                             if (Number(itemarr[i]['itemcnt']) < cnt) callback(null, false);
                             //아이템 수량 조정 부분
-                            itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt'] - cnt);
+                            itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt']) - Number(cnt);
                             isItemUsed = true; eff = itemarr[i]['efficacy']; itemidx = i;
                         }
                     }
