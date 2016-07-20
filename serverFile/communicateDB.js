@@ -955,29 +955,65 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                     else callback(null, user, item)
                 });
             },
-            function (user, item, callback) {
+            function(user, item, callback){
+                if (showWaterfallLog == true) log('useItem wtf 2.5');
+                db.collection('catCollection', function (err, collection) {
+                    if (err) return callback(err);
+                    else {
+                        collection.find({ 'catName': catname }).toArray(function (err, docs) {
+                            if (err) return callback(err);
+                            else if (docs.length == 0) return callback(null, null);
+                            else {
+                                callback(null, user, item, docs[0]);
+                            }
+                        })
+                    }
+                });
+            },
+            function (user, item, cat, callback) {
                 if (showWaterfallLog == true) log('useItem wtf 3');
                 if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
                 if (isVerbose == true) console.log('item is ' + JSON.stringify(item))
-                if (user != null && item != null) {
-                    itemarr = user.userItem; var flag = false; var eff = 0;
+                if (user != null && item != null && cat != null) {
+                    itemarr = user.userItem; var flag = false; var eff = 0; var itemidx = -1;
                     for (var i = 0; i < itemarr.length; i++) {
                         if (itemarr[i]['itemID'] == itemid) {
                             if (Number(itemarr[i]['itemcnt']) < cnt) callback(null, false);
                             //아이템 수량 조정 부분
                             itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt'] - cnt);
-                            isItemUsed = true; eff = itemarr[i]['efficacy']
+                            isItemUsed = true; eff = itemarr[i]['efficacy']; itemidx = i;
                         }
                     }
                     if (isItemUsed == true) {
                         //효과 적용 부분
-                        updateFam(userid, catname, Number(eff), function (erruF, res) {
-                            if (erruF) return callback(erruF);
-                            updateUserData(userid, {'userItem': itemarr }, function (err, res) {
-                                if (err) return callback(err);
-                                else callback(null, true)
+                        if (itemarr[itemidx]['itemcatalog'] != 'food' && itemarr[itemidx]['itemcatalog'] != 'snack') {
+                            updateFam(userid, catname, Number(eff), function (erruF, res) {
+                                if (erruF) return callback(erruF);
+                                updateUserData(userid, { 'userItem': itemarr }, function (err, res) {
+                                    if (err) return callback(err);
+                                    else callback(null, true)
+                                })
                             })
-                        })
+                        } else {
+                            var mealTimeChange = Number(new Date().getTime()) - Number(cat['catstatus']['lastMealTime'])
+                            var newSatiety = Number(cat['catstatus']['satiety']) - Math.round(mealTimeChange)
+                            if (newSatiety < 0) newSatiety = 0;
+                            eff = (1.1 - newSatiety / 100) * eff;
+                            if (item['itemcatalog'] == 'food') newSatiety += 40
+                            if (item['itemcatalog'] == 'snack') newSatiety += 20
+                            if (newSatiety > 100) newSatiety = 100;
+                            updateCatData(catname, { 'satiety': newSatiety, 'lastMealTime': Number(new Date().getTime()) }, function (err1, res) {
+                                if (err1) return callback(err1);
+                                updateFam(userid, catname, Number(eff), function (erruF, res) {
+                                    if (erruF) return callback(erruF);
+                                    updateUserData(userid, { 'userItem': itemarr }, function (err, res) {
+                                        if (err) return callback(err);
+                                        else callback(null, true)
+                                    })
+                                })
+                            })
+                            
+                        }
                     } else callback(null, false)
                 } else callback(null, false);
             }
