@@ -13,7 +13,8 @@
     buyItem: buyItem,
     findItemByID: findItemByID,
     updateFam: updateFam,
-    useItem : useItem
+    useItem: useItem,
+    catRandomWalk:catRandomWalk
 }
 //
 var mycon = require('./connToMongo');
@@ -990,4 +991,24 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
         log(err);
         useItemCallback(err, null);
     }
+}
+
+function catRandomWalk()
+{
+    console.log('catRandomWalk')
+    db.collection('catCollection', function (err, collection) {
+        if (err) return console.log(err);
+        else {
+            collection.find().toArray(function (err, docs) {
+                if (err) return console.log(err);
+                for (var i = 0; i < docs.length; i++)
+                {
+                    var pastpos = docs[i].catlocate;
+                    pastpos.lon += (Math.random() * 0.01)
+                    pastpos.lat += (Math.random() * 0.01)
+                    updateCatData(docs[i]['catName'], { 'catlocate': pastpos });
+                }
+            })
+        }
+    });
 }

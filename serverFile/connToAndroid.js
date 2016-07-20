@@ -11,6 +11,15 @@ function handler(req, res) {
     res.end('Hello from server');
 }
 
+function catRand() {
+    setTimeOut(function () {
+        mydb.catRandomWalk();
+        catRand()
+    }, Math.round((Math.random() + 1) * 3600))
+}
+
+
+
 io.sockets.on('connection', function (socket) {
 
     socket.setMaxListeners(25);
