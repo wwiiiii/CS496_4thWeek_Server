@@ -1003,9 +1003,9 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                             if (item['itemcatalog'] == 'food') newSatiety += 40
                             if (item['itemcatalog'] == 'snack') newSatiety += 20
                             if (newSatiety > 100) newSatiety = 100;
-                            updateCatData(catname, { 'satiety': newSatiety, 'lastMealTime': Number(new Date().getTime()) }, function (err1, res) {
+                            updateCatData(catname, { 'catstatus.satiety': newSatiety, 'catstatus.lastMealTime': Number(new Date().getTime()) }, function (err1, res) {
                                 if (err1) return callback(err1);
-                                updateFam(userid, catname, Number(eff), function (erruF, res) {
+                                updateFam(userid, catname, Math.round(Number(eff)), function (erruF, res) {
                                     if (erruF) return callback(erruF);
                                     updateUserData(userid, { 'userItem': itemarr }, function (err, res) {
                                         if (err) return callback(err);
