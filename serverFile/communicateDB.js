@@ -11,7 +11,9 @@
     findStoreItem: findStoreItem,
     addStoreItem: addStoreItem,
     buyItem: buyItem,
-    findItemByID : findItemByID
+    findItemByID: findItemByID,
+    updateFam: updateFam,
+    useItem : useItem
 }
 //
 var mycon = require('./connToMongo');
@@ -865,13 +867,13 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                     console.log('user is ' + JSON.stringify(user))
                     console.log('item is ' + JSON.stringify(cat))
                     userarr = user.userRank; userexist = false;
-                    catarr = cat.catRank; catexist = false;
+                    catarr = cat.catRank; catexist = false; useridx = -1;
                     for (var i = 0; i < userarr.length; i++)
                     {
                         if (userarr[i]['catname'] == catname)
                         {
                             userarr[i]['fam'] = userarr[i]['fam'] + Number(famChange)
-                            userexist = true; break;
+                            userexist = true; useridx = i;break;
                         }
                     }
                     if (userexist == false){
@@ -885,6 +887,20 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                     }
                     if (catexist == false) {
                         catarr.push({ "userid": userid, "fam": Number(famChange) })
+                    }
+                    catarr.sort(function (a, b) {
+                        var keya = Number(a.fam); var keyb = Number(b.fam);
+                        if (keya > keyb) return 1;
+                        if (keya < keyb) return -1;
+                        return 0;
+                    })
+                    for (var i = 0; i < catarr.length; i++)
+                    {
+                        catarr[i]['rank'] = i + 1;
+                        if (catarr[i]['userid'] == userid)
+                        {
+                            userarr[useridx]['rank'] = i + 1;
+                        }
                     }
                     updateUserData(userid, { 'userRank': userarr}, function (err, res) {
                         if (err) return callback(err);
@@ -959,8 +975,7 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                                 else callback(null, true)
                             })
                         })
-                    }
-                    else callback(null, false)
+                    } else callback(null, false)
                 } else callback(null, false);
             }
         ],
