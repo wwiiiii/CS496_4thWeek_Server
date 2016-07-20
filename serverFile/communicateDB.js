@@ -27,7 +27,7 @@ var server = new mongodb.Server(server_ip, 27017, { auto_reconnect: true });
 var log = console.log;
 var gpsDiff = 0.5
 var db = ''
-var isVerbose = true
+var isVerbose = false
 MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (err, firstdb) {
     if(err) return console.log('First open error')
     db = firstdb
@@ -731,7 +731,7 @@ function findItemByID(itemID, findItemByIDCallback)
             },
             function (collection, callback) {
                 log("findItemByID wtf 3");
-                collection.find({'itemID':itemID}).toArray(function (err, docs) {
+                collection.find({'itemID':String(itemID)}).toArray(function (err, docs) {
                     if (err) {
                         console.log('findByItemID error');
                         console.log(err);
