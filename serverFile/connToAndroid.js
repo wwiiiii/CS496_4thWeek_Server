@@ -107,6 +107,11 @@ io.sockets.on('connection', function (socket) {
             }
         })
     })
+
+    socket.on('useitem', function (data) {
+        console.log('useitem called with ' + JSON.stringify(data))
+    })
+
     
 
     //여기서부터는 admin용
