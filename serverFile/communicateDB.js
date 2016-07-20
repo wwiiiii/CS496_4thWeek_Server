@@ -796,12 +796,12 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                         itemarr = user.userItem; var flag = false
                         for (var i = 0; i < itemarr.length; i++) {
                             if (itemarr[i]['itemID'] == itemid) {
-                                itemarr[i]['itemcnt'] += cnt;
+                                itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt'] + cnt);
                                 flag = true
                             }
                         }
                         if (flag == false) {
-                            var temp = item; temp['itemcnt'] = cnt
+                            var temp = item; temp['itemcnt'] = Number(cnt)
                             itemarr.push(temp)
                         }
                         finres = true
@@ -963,7 +963,7 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                         if (itemarr[i]['itemID'] == itemid) {
                             if (Number(itemarr[i]['itemcnt']) < cnt) callback(null, false);
                             //아이템 수량 조정 부분
-                            itemarr[i]['itemcnt'] = itemarr[i]['itemcnt'] - cnt;
+                            itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt'] - cnt);
                             isItemUsed = true
                         }
                     }
