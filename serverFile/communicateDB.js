@@ -4,6 +4,7 @@
     removeUser: removeUser,
     removeCat: removeCat,
     loadUserData: loadUserData,
+    loadCatData: loadCatData,
     findNearAll: findNearAll,
     findNearCats: findNearCats,
     findNearUsers: findNearUsers,
