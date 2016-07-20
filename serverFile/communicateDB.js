@@ -27,7 +27,7 @@ var server = new mongodb.Server(server_ip, 27017, { auto_reconnect: true });
 var log = console.log;
 var gpsDiff = 0.5
 var db = ''
-var isVerbose = false
+var isVerbose = true
 MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (err, firstdb) {
     if(err) return console.log('First open error')
     db = firstdb
