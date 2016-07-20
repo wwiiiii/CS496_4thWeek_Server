@@ -75,8 +75,8 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                             return callback(err);
                         }
                         else {
-                            console.log('loadUserFindRes')
-                            console.log(JSON.stringify(docs))
+                            if(isVerbose == true)console.log('loadUserFindRes')
+                            if (isVerbose == true) console.log(JSON.stringify(docs))
                             callback(null, collection, docs);
                         }
                     });
@@ -104,7 +104,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                 function (err, result) {
                     log("loadUserData end");
                     if (err) throw err;
-                    else log(result);
+                    else if (isVerbose == true) log(result);
                     //db.close();
                     if (!err) loadUserDataCallback(null, result);
                 });
@@ -158,7 +158,7 @@ function loadCatData(catname, loadCatDataCallback)
             function (err, result) {
                 log("loadCatData end");
                 if (err) throw err;
-                else log(result);
+                else if (isVerbose == true) log(result);
                 //db.close();
                 if (!err) loadCatDataCallback(null, result[0]);
             });
@@ -177,7 +177,7 @@ function addUser(user, addUserCallback) {
     //MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (errR, db) {
     //if(errR) return console.log(errR)
     console.log('add new user');
-    console.log(JSON.stringify(user));
+    if (isVerbose == true) console.log(JSON.stringify(user));
         try {
             async.waterfall([
                 function (callback) {
@@ -210,7 +210,7 @@ function addUser(user, addUserCallback) {
                 function (err, result) {
                     log("addUser end");
                     if (err) throw err;
-                    else log(result);
+                    else if (isVerbose == true) log(result);
                     //db.close();
                     if (!err) addUserCallback(null, result);
                 });
@@ -260,7 +260,7 @@ function removeUser(constraints, removeUserCallback)
                 function (err, result) {
                     log("removeUser end");
                     if (err) throw err;
-                    else log(result);
+                    else if (isVerbose == true) log(result);
                     //db.close();
                     if (!err) removeUserCallback(result);
                 });
@@ -308,7 +308,7 @@ function addCat(cat, addCatCallback)
                 function (err, result) {
                     log("addCat end");
                     if (err) throw err;
-                    else log(result);
+                    else if(isVerbose == true) log(result);
                     //db.close();
                     if (!err) addCatCallback(result);
                 });
@@ -357,7 +357,7 @@ function removeCat(constraints, removeCatCallback) {
                 function (err, result) {
                     log("removeCat end");
                     if (err) throw err;
-                    else log(result);
+                    else if (isVerbose == true) log(result);
                     //db.close();
                     if (!err) removeCatCallback(result);
                 });
@@ -443,7 +443,7 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
                 function (err, result) {
                     log("findNearCats end");
                     if (err) throw err;
-                    else log(result);
+                    else if (isVerbose == true) log(result);
                     //db.close();
                     if (!err) findNearCatsCallback(null , result);
                 });
@@ -498,7 +498,7 @@ function findNearUsers(position, findNearUsersCallback)
                 function (err, result) {
                     log("findNearUsers end");
                     if (err) throw err;
-                    else log(result);
+                    else if (isVerbose == true) log(result);
                     //db.close();
                     if (!err) findNearUsersCallback(null, result);
                 });
@@ -550,7 +550,7 @@ function updateUserData(myid, change, updateUserDataCallback)
                 function (err, result) {
                     log("updateUserData end");
                     if (err) throw err;
-                    else log(result['result']);
+                    else if (isVerbose == true) log(result['result']);
                     //db.close();
                     if (!err) updateUserDataCallback(null, result);
                 });
@@ -594,7 +594,7 @@ function updateCatData(catname, change, updateCatDataCallback) {
             function (err, result) {
                 log("updateCatData end");
                 if (err) throw err;
-                else log(result['result']);
+                else if (isVerbose == true) log(result['result']);
                 //db.close();
                 if (!err) updateCatDataCallback(null, result);
             });
@@ -642,7 +642,7 @@ function addStoreItem(item, addStoreItemCallback) {
                 function (err, result) {
                     log("addStoreItem end");
                     if (err) throw err;
-                    else log(result);
+                    else if (isVerbose == true) log(result);
                     //db.close();
                     if (!err) addStoreItemCallback(null, result);
                 });
@@ -680,17 +680,13 @@ function findStoreItem(condition, findStoreItemCallback)
                     consArr = [];
                     consArr.push({ 'itemcatalog': 'foo' })
                     try {
-                        console.log(Boolean(condition.food))
-                        console.log(Boolean(condition.etc))
-                        console.log(Boolean(condition.toy))
-                        console.log(Boolean(condition.snack))
                         if (Boolean(condition.food) == true) consArr.push({ 'itemcatalog': 'food' })
                         if (Boolean(condition.etc) == true) consArr.push({ 'itemcatalog': 'etc' })
                         if (Boolean(condition.toy) == true) consArr.push({ 'itemcatalog': 'toy' })
                         if (Boolean(condition.snack) == true) consArr.push({ 'itemcatalog': 'snack' })
                         var optionConstraint = new Object()
                         optionConstraint['$or'] = consArr
-                        console.log(optionConstraint)
+                        if (isVerbose == true) console.log(optionConstraint)
                     } catch (err) { console.log('wtf 3 err'); console.log(err);}
                     collection.find(optionConstraint).toArray(function (err, docs) {
                         if (err) {
@@ -707,7 +703,7 @@ function findStoreItem(condition, findStoreItemCallback)
                 function (err, result) {
                     log("findStoreItem end");
                     if (err) throw err;
-                    else log(result);
+                    else if (isVerbose == true) log(result);
                     //db.close();
                     if (!err) findStoreItemCallback(null, result);
                 });
@@ -748,7 +744,7 @@ function findItemByID(itemID, findItemByIDCallback)
         ],
             function (err, result) {
                 log("findItemByID end");
-                if (err) throw err; else log(result);
+                if (err) throw err; else if (isVerbose == true) log(result);
                 if (!err) findItemByIDCallback(null, result[0]);
             });
     } catch (err) {
@@ -788,8 +784,8 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
             },
             function (user, item, callback) {
                 log('buyItem wtf 3');
-                console.log('user is ' + JSON.stringify(user))
-                console.log('item is ' + JSON.stringify(item))
+                if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
+                if (isVerbose == true) console.log('item is ' + JSON.stringify(item))
                 if (user != null) {
                     var nowmoney = Number(user.userInfo.money)
                     var targetmoney = Number(item.itemcost) * Number(cnt)
@@ -818,7 +814,7 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
         ],
             function (err, result) {
                 log("buyItem end");
-                if (err) throw err; else log(result);
+                if (err) throw err; else if (isVerbose == true) log(result);
                 if (!err) buyItemCallback(null, result);
             });
     } catch (err) {
@@ -866,8 +862,8 @@ function updateFam(userid, catname, famChange, updateFamCallback)
             function (user, cat, callback) {
                 log('updateFam wtf 3');
                 if (user != null && cat != null) {
-                    console.log('user is ' + JSON.stringify(user))
-                    console.log('cat is ' + JSON.stringify(cat))
+                    if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
+                    if (isVerbose == true) console.log('cat is ' + JSON.stringify(cat))
                     userarr = user.userRank; userexist = false;
                     catarr = cat.catRank; catexist = false; useridx = -1;
                     for (var i = 0; i < userarr.length; i++)
@@ -919,7 +915,7 @@ function updateFam(userid, catname, famChange, updateFamCallback)
         ],
             function (err, result) {
                 log("updateFam end");
-                if (err) throw err; else log(result);
+                if (err) throw err; else if(isVerbose == true) log(result);
                 if (!err) updateFamCallback(null, result);
             });
     } catch (err) {
@@ -958,8 +954,8 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
             },
             function (user, item, callback) {
                 log('useItem wtf 3');
-                console.log('user is ' + JSON.stringify(user))
-                console.log('item is ' + JSON.stringify(item))
+                if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
+                if (isVerbose == true) console.log('item is ' + JSON.stringify(item))
                 if (user != null && item != null) {
                     itemarr = user.userItem; var flag = false
                     for (var i = 0; i < itemarr.length; i++) {
@@ -984,7 +980,7 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
         ],
             function (err, result) {
                 log("useItem end");
-                if (err) throw err; else log(result);
+                if (err) throw err; else if (isVerbose == true) log(result);
                 if (!err) useItemCallback(null, result);
             });
     } catch (err) {
@@ -1007,7 +1003,7 @@ function catRandomWalk()
                     var pastpos = docs[i].catlocate;
                     pastpos.lon += (Math.random() * 0.01)
                     pastpos.lat += (Math.random() * 0.01)
-                    updateCatData(docs[i]['catName'], { 'catlocate': pastpos });
+                    updateCatData(docs[i]['catName'], { 'catlocate': pastpos }, function (err, res) {});
                 }
             })
         }

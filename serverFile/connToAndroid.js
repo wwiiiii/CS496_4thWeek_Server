@@ -14,7 +14,7 @@ function handler(req, res) {
 function catRand() {
     var nextTime = Math.round((Math.random() + 1) * 3600)
     console.log('next cat move is ' + String(nextTime))
-    setTimeOut(function () {
+    setTimeout(function () {
         mydb.catRandomWalk();
         catRand()
     }, nextTime)
