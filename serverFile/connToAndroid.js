@@ -20,7 +20,7 @@ function catRand() {
     }, nextTime)
 }
 
-catRand()
+//catRand()
 
 io.sockets.on('connection', function (socket) {
 
@@ -110,6 +110,13 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('useitem', function (data) {
         console.log('useitem called with ' + JSON.stringify(data))
+        mydb.useItem(data.userid, data.iteminfo, data.catname, 1, function (err, res) {
+            if (err || res == false) { console.log(err); io.to(socket.id).emit('useitemRes', { 'isSucceed': false, 'error': err }) }
+            else {
+                console.log('useitem succeed')
+                io.to(socket.id).emit('useitemRes', { 'isSucceed': true, 'error': null })
+            }
+        })
     })
 
     
