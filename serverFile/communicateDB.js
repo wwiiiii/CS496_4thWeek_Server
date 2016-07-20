@@ -14,7 +14,8 @@
     findItemByID: findItemByID,
     updateFam: updateFam,
     useItem: useItem,
-    catRandomWalk:catRandomWalk
+    catRandomWalk: catRandomWalk,
+    getUserItemList: getUserItemList
 }
 //
 var mycon = require('./connToMongo');
@@ -989,6 +990,29 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
         log(err);
         useItemCallback(err, null);
     }
+}
+
+function getUserItemList(userid, getUserItemListCallback)
+{
+    var ITEM_COUNT = 8;
+    loadUserData({ 'id': userid }, function (err, user) {
+        if (err) getUserItemListCallback(err, null)
+        else {
+            itemArr = []; itemArrRes = [];
+            for (var i = 0; i < ITEM_COUNT; i++)
+            {itemArr.push(0);}
+            for (var i = 0; i < user['userItem'].length; i++)
+            {
+                itemArr[Number(user['userItem'][i]['itemID']) - 1] = Number(user['userItem'][i]['itemcnt'])
+            }
+            for (var i = 0; i < ITEM_COUNT; i++)
+            {
+                temp = new Object(); temp[String(i + 1)] = itemArr[i]
+                itemArrRes.push(temp)
+            }
+            getUserItemListCallback(null, itemArrRes)
+        }
+    })
 }
 
 function catRandomWalk()

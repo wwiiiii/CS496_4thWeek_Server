@@ -119,7 +119,16 @@ io.sockets.on('connection', function (socket) {
         })
     })
 
-    
+    socket.on('useritem', function (data) {
+        console.log('getUseritem called with ' + JSON.stringify(data))
+        mydb.getUserItemList(userid, function (err, res) {
+            if (err) { console.log(err); io.to(socket.id).emit('useritemRes', err) }
+            else {
+                console.log('getUseritem succeed')
+                io.to(socket.id).emit('useritemRes', res)
+            }
+        })
+    })
 
     //여기서부터는 admin용
     socket.on('admin_addCat', function (data) {
