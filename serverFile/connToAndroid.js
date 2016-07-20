@@ -21,10 +21,8 @@ function catRand() {
 }
 
 //catRand()
-
+io.socket.setMaxListeners(25);
 io.sockets.on('connection', function (socket) {
-
-    socket.setMaxListeners(25);
     socket.on('init', function (loginStatus) {
         mydb.loadUserData(loginStatus, function (err, user) {
             if (err) { console.log(err); }
@@ -169,7 +167,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log('disconnet');
         console.log(socket.id);
-        strs = ['init', 'heartbeat', 'store', 'userInfo', 'admin_addCat', 'admin_addStoreItem', 'admin_findNear', 'admin_findStoreItem']
+        strs = ['init', 'heartbeat', 'store', 'userInfo',
+            'catInfo', 'buy', 'useritem', 'useitem',
+            'admin_addCat', 'admin_addStoreItem', 'admin_findNear', 'admin_findStoreItem']
         for (var i = 0; i < strs.length; i++)
         {
             socket.removeAllListeners(strs[i])
