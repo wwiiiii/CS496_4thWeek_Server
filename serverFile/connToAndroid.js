@@ -63,7 +63,13 @@ io.sockets.on('connection', function (socket) {
         mydb.loadUserData({'ID':userid}, function (err, user) {
             if (err) { console.log(err); }
             else {
-                var temparr = [{ 'catname': '치즈냥이', 'fam' : 3 }, {'catname' : '아름이' , 'fam' : 5}]//user.userRank
+                var temparr = [{ 'catname': '치즈냥이', 'fam': 3 }, { 'catname': '아름이', 'fam': 5 }]//user.userRank
+                temparr.sort(function (a, b) {
+                    var keyA = Number(a.fam); var keyB = Number(b.fam);
+                    if (keyA < keyB) return -1;
+                    if (keyA > keyB) return 1;
+                    return 0;
+                })
                 user.userRank = temparr
                 io.to(socket.id).emit('userInfoRes', user);
                 console.log('userInfoRes to ' + socket.id);
@@ -77,6 +83,14 @@ io.sockets.on('connection', function (socket) {
         mydb.loadCatData(catname, function (err, cat) {
             if (err) { console.log(err); }
             else {
+                var temparr = cat.catRank;
+                temparr.sort(function (a, b) {
+                    var keyA = Number(a.fam); var keyB = Number(b.fam);
+                    if (keyA < keyB) return -1;
+                    if (keyA > keyB) return 1;
+                    return 0;
+                })
+                cat.catRank = temparr;
                 io.to(socket.id).emit('catInfoRes', cat);
                 console.log('catInfoRes to ' + socket.id);
                 console.log(cat);
