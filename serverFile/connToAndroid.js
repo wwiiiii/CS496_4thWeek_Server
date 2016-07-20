@@ -11,6 +11,8 @@ function handler(req, res) {
     res.end('Hello from server');
 }
 
+console.log('\n\n\n\n');
+
 function catRand() {
     var nextTime = Math.round((Math.random() + 1) * 3600)
     console.log('next cat move is ' + String(nextTime))
@@ -21,7 +23,7 @@ function catRand() {
 }
 
 //catRand()
-io.socket.setMaxListeners(25);
+io.sockets.setMaxListeners(25);
 io.sockets.on('connection', function (socket) {
     socket.on('init', function (loginStatus) {
         mydb.loadUserData(loginStatus, function (err, user) {
@@ -39,6 +41,7 @@ io.sockets.on('connection', function (socket) {
     //input  : {id : ~~, lat : ~~, lon: ~~}
     //output : 
     socket.on('heartbeat', function (data) {
+        console.log('\n\n\n\n');
         console.log('heartbeat called by' + socket.id)
         console.log(JSON.stringify(data))
         var lon = Number(data.lon); var lat = Number(data.lat);
@@ -63,6 +66,7 @@ io.sockets.on('connection', function (socket) {
 
     //해당 조건에 맞는 상점 아이템들을 검색해줌
     socket.on('store', function (condition) {
+        console.log('\n\n\n\n');
         console.log('store called')
         console.log(JSON.stringify(condition))
         if (!condition.hasOwnProperty('food')) condition['food'] = false
@@ -75,6 +79,7 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('userInfo', function (info) {
+        console.log('\n\n\n\n');
         var userid = info.ID
         mydb.loadUserData({'ID':userid}, function (err, user) {
             if (err) { console.log(err); }
@@ -91,6 +96,7 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('catInfo', function (info) {
+        console.log('\n\n\n\n');
         var catname = info.catName
         mydb.loadCatData(catname, function (err, cat) {
             if (err) { console.log(err); }
@@ -103,6 +109,7 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('buy', function (data) {
+        console.log('\n\n\n\n');
         console.log('buy called with ' + JSON.stringify(data))
         mydb.buyItem(data.userid, data.iteminfo.itemID, data.quantity, function (err, res) {
             if (err || res == false) { console.log(err); io.to(socket.id).emit('buyRes', {'isSucceed' : false, 'error' : err}) }
@@ -114,6 +121,7 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('useitem', function (data) {
+        console.log('\n\n\n\n');
         console.log('useitem called with ' + JSON.stringify(data))
         mydb.useItem(data.userid, data.iteminfo, data.catname, 1, function (err, res) {
             if (err || res == false) { console.log(err); io.to(socket.id).emit('useitemRes', { 'isSucceed': false, 'error': err }) }
@@ -125,6 +133,7 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('useritem', function (data) {
+        console.log('\n\n\n\n');
         console.log('getUseritem called with ' + JSON.stringify(data))
         mydb.getUserItemList(userid, function (err, res) {
             if (err) { console.log(err); io.to(socket.id).emit('useritemRes', err) }
@@ -165,6 +174,7 @@ io.sockets.on('connection', function (socket) {
 
 
     socket.on('disconnect', function () {
+        console.log('\n\n\n\n');
         console.log('disconnet');
         console.log(socket.id);
         strs = ['init', 'heartbeat', 'store', 'userInfo',

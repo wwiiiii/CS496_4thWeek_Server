@@ -890,7 +890,7 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                         }
                     }
                     if (catexist == false) {
-                        catarr.push({ "userid": userid, "fam": Number(famChange) })
+                        catarr.push({ "userid": userid, "fam": Number(famChange), "username" : user.userInfo.name })
                     }
                     catarr.sort(function (a, b) {
                         var keya = Number(a.fam); var keyb = Number(b.fam);
