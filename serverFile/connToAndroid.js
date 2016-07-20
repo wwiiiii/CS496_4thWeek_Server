@@ -135,7 +135,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('useritem', function (data) {
         console.log('\n\n\n\n');
         console.log('getUseritem called with ' + JSON.stringify(data))
-        mydb.getUserItemList(userid, function (err, res) {
+        mydb.getUserItemList(data.userid, function (err, res) {
             if (err) { console.log(err); io.to(socket.id).emit('useritemRes', err) }
             else {
                 console.log('getUseritem succeed')
