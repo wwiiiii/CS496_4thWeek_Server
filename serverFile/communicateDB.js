@@ -27,7 +27,7 @@ var server = new mongodb.Server(server_ip, 27017, { auto_reconnect: true });
 var log = console.log;
 var gpsDiff = 0.5
 var db = ''
-var isVerbose = true
+var isVerbose = false
 MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (err, firstdb) {
     if(err) return console.log('First open error')
     db = firstdb
@@ -958,18 +958,18 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                 if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
                 if (isVerbose == true) console.log('item is ' + JSON.stringify(item))
                 if (user != null && item != null) {
-                    itemarr = user.userItem; var flag = false
+                    itemarr = user.userItem; var flag = false; var eff = 0;
                     for (var i = 0; i < itemarr.length; i++) {
                         if (itemarr[i]['itemID'] == itemid) {
                             if (Number(itemarr[i]['itemcnt']) < cnt) callback(null, false);
                             //아이템 수량 조정 부분
                             itemarr[i]['itemcnt'] = Number(itemarr[i]['itemcnt'] - cnt);
-                            isItemUsed = true
+                            isItemUsed = true; eff = itemarr[i]['efficacy']
                         }
                     }
                     if (isItemUsed == true) {
                         //효과 적용 부분
-                        updateFam(userid, catname, Number(itemarr[i]['efficacy']), function (erruF, res) {
+                        updateFam(userid, catname, Number(eff), function (erruF, res) {
                             if (erruF) return callback(erruF);
                             updateUserData(userid, {'userItem': itemarr }, function (err, res) {
                                 if (err) return callback(err);
