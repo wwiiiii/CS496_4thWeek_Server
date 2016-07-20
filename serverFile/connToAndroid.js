@@ -12,13 +12,15 @@ function handler(req, res) {
 }
 
 function catRand() {
+    var nextTime = Math.round((Math.random() + 1) * 3600)
+    console.log('next cat move is ' + String(nextTime))
     setTimeOut(function () {
         mydb.catRandomWalk();
         catRand()
-    }, Math.round((Math.random() + 1) * 3600))
+    }, nextTime)
 }
 
-
+catRand()
 
 io.sockets.on('connection', function (socket) {
 
