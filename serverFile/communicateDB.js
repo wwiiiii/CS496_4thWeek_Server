@@ -877,7 +877,8 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                         }
                     }
                     if (userexist == false){
-                        userarr.push({"catname" : catname, "fam" : Number(famChange)})
+                        userarr.push({ "catname": catname, "fam": Number(famChange) })
+                        useridx = userarr.length - 1;
                     }
                     for (var i = 0; i < catarr.length; i++) {
                         if (catarr[i]['userid'] == userid) {
