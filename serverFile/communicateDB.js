@@ -88,7 +88,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                         newuser.userlocate = new Object()
                         newuser.userlocate.lat = 0.0; newuser.userlocate.lon = 0.0;
                         newuser.userInfo = new Object()
-                        newuser.userInfo.name = username; newuser.userInfo.money = 5000;
+                        newuser.userInfo.name = username; newuser.userInfo.money = 50000;
                         newuser.userRank = new Array()
                         newuser.userItem = new Array()
 
@@ -1001,8 +1001,8 @@ function catRandomWalk()
                 for (var i = 0; i < docs.length; i++)
                 {
                     var pastpos = docs[i].catlocate;
-                    pastpos.lon += (Math.random() * 0.01)
-                    pastpos.lat += (Math.random() * 0.01)
+                    pastpos.lon += (Math.random() * 0.0001)
+                    pastpos.lat += (Math.random() * 0.0001)
                     updateCatData(docs[i]['catName'], { 'catlocate': pastpos }, function (err, res) {});
                 }
             })
