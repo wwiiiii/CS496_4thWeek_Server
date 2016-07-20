@@ -76,11 +76,11 @@ io.sockets.on('connection', function (socket) {
             else {
                 //var temparr = [{ 'catname': '치즈냥이', 'fam': 3 }, { 'catname': '아름이', 'fam': 5 }]//user.userRank
                 //user.userRank = temparr
-                mydb.updateFam(userid, '치즈냥이', 10, function (err, res) {
+                //mydb.updateFam(userid, '치즈냥이', 10, function (err, res) {
                     io.to(socket.id).emit('userInfoRes', user);
                     console.log('userInfoRes to ' + socket.id);
                     console.log(JSON.stringify(user));
-                })
+                //})
             }
         });
     })

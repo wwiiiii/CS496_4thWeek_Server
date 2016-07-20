@@ -28,6 +28,8 @@ var log = console.log;
 var gpsDiff = 0.5
 var db = ''
 var isVerbose = false
+var showWaterfallLog = false
+
 MongoClient.connect("mongodb://localhost:27017/kaistGoDB", function (err, firstdb) {
     if(err) return console.log('First open error')
     db = firstdb
@@ -49,21 +51,21 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
         try {
             async.waterfall([
                 function (callback) {
-                    log("loadUserData wtf 1");
+                    if (showWaterfallLog == true) log("loadUserData wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err);
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("loadUserData wtf 2");
+                    if (showWaterfallLog == true) log("loadUserData wtf 2");
                     db.collection('userCollection', function (err, collection) {
                         if (err) return callback(err);
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("loadUserData wtf 3");
+                    if (showWaterfallLog == true) log("loadUserData wtf 3");
                     //console.log(userConstraint.name)
                     //console.log(userConstraint.id)
                     //mycons = { userid: userConstraint.id }
@@ -103,7 +105,7 @@ function loadUserData(userConstraint, loadUserDataCallback)//callback 인자는 
                 }
             ],
                 function (err, result) {
-                    log("loadUserData end");
+                    if (showWaterfallLog == true) log("loadUserData end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result);
                     //db.close();
@@ -126,21 +128,21 @@ function loadCatData(catname, loadCatDataCallback)
     try {
         async.waterfall([
             function (callback) {
-                log("loadCatData wtf 1");
+                if (showWaterfallLog == true) log("loadCatData wtf 1");
                 db.open(function (err, db) {
                     if (err) return callback(err, 'loadCatData wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
-                log("loadCatData wtf 2");
+                if (showWaterfallLog == true) log("loadCatData wtf 2");
                 db.collection('catCollection', function (err, collection) {
                     if (err) return callback(err, 'loadCatData wtf 2 err');
                     else callback(null, collection);
                 });
             },
             function (collection, callback) {
-                log("loadCatData wtf 3");
+                if (showWaterfallLog == true) log("loadCatData wtf 3");
                 var nameConstraint = {
                     "catName" : catname
                 }
@@ -182,21 +184,21 @@ function addUser(user, addUserCallback) {
         try {
             async.waterfall([
                 function (callback) {
-                    log("addUser wtf 1");
+                    if (showWaterfallLog == true) log("addUser wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err, 'wtf 1 error');
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("addUser wtf 2");
+                    if (showWaterfallLog == true) log("addUser wtf 2");
                     db.collection('userCollection', function (err, collection) {
                         if (err) return callback(err, 'wtf 2 err');
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("addUser wtf 3");
+                    if (showWaterfallLog == true) log("addUser wtf 3");
                     collection.insert(user, function (err, res) {
                         if (err) {
                             console.log('insertToDb error');
@@ -209,7 +211,7 @@ function addUser(user, addUserCallback) {
                 }
             ],
                 function (err, result) {
-                    log("addUser end");
+                    if (showWaterfallLog == true) log("addUser end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result);
                     //db.close();
@@ -230,21 +232,21 @@ function removeUser(constraints, removeUserCallback)
         try {
             async.waterfall([
                 function (callback) {
-                    log("removeUser wtf 1");
+                    if (showWaterfallLog == true) log("removeUser wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err, 'removeUser wtf 1 error');
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("removeUser wtf 2");
+                    if (showWaterfallLog == true) log("removeUser wtf 2");
                     db.collection('userCollection', function (err, collection) {
                         if (err) return callback(err, 'removeUser wtf 2 err');
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("removeUser wtf 3");
+                    if (showWaterfallLog == true) log("removeUser wtf 3");
                     /* mycon.insertToDb(collection, user, function (err) {
                          if (err == null) callback(null, collection);
                          else callback(err, null);
@@ -259,7 +261,7 @@ function removeUser(constraints, removeUserCallback)
                 }
             ],
                 function (err, result) {
-                    log("removeUser end");
+                    if (showWaterfallLog == true) log("removeUser end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result);
                     //db.close();
@@ -280,21 +282,21 @@ function addCat(cat, addCatCallback)
         try {
             async.waterfall([
                 function (callback) {
-                    log("addCat wtf 1");
+                    if (showWaterfallLog == true) log("addCat wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err, 'addCat wtf 1 error');
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("addCat wtf 2");
+                    if (showWaterfallLog == true) log("addCat wtf 2");
                     db.collection('catCollection', function (err, collection) {
                         if (err) return callback(err, 'addCat wtf 2 err');
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("addCat wtf 3");
+                    if (showWaterfallLog == true) log("addCat wtf 3");
                     collection.insert(cat, function (err, res) {
                         if (err) {
                             console.log('insertToDb error');
@@ -307,7 +309,7 @@ function addCat(cat, addCatCallback)
                 }
             ],
                 function (err, result) {
-                    log("addCat end");
+                    if (showWaterfallLog == true) log("addCat end");
                     if (err) throw err;
                     else if(isVerbose == true) log(result);
                     //db.close();
@@ -327,21 +329,21 @@ function removeCat(constraints, removeCatCallback) {
         try {
             async.waterfall([
                 function (callback) {
-                    log("removeCat wtf 1");
+                    if (showWaterfallLog == true) log("removeCat wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err, 'removeCat wtf 1 error');
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("removeCat wtf 2");
+                    if (showWaterfallLog == true) log("removeCat wtf 2");
                     db.collection('catCollection', function (err, collection) {
                         if (err) return callback(err, 'removeCat wtf 2 err');
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("removeCat wtf 3");
+                    if (showWaterfallLog == true) log("removeCat wtf 3");
                     /* mycon.insertToDb(collection, Cat, function (err) {
                          if (err == null) callback(null, collection);
                          else callback(err, null);
@@ -356,7 +358,7 @@ function removeCat(constraints, removeCatCallback) {
                 }
             ],
                 function (err, result) {
-                    log("removeCat end");
+                    if (showWaterfallLog == true) log("removeCat end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result);
                     //db.close();
@@ -410,21 +412,21 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
         try {
             async.waterfall([
                 function (callback) {
-                    log("findNearCats wtf 1");
+                    if (showWaterfallLog == true) log("findNearCats wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err, 'findNearCats wtf 1 error');
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("findNearCats wtf 2");
+                    if (showWaterfallLog == true) log("findNearCats wtf 2");
                     db.collection('catCollection', function (err, collection) {
                         if (err) return callback(err, 'findNearCats wtf 2 err');
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("findNearCats wtf 3");
+                    if (showWaterfallLog == true) log("findNearCats wtf 3");
                     var locateConstraint = {
                         "catlocate.lon": { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff },
                         "catlocate.lat": { "$gte": position.lat - gpsDiff, "$lte": position.lat + gpsDiff }
@@ -442,7 +444,7 @@ function findNearCats(position, findNearCatsCallback)//callback 인자는 주변
                 }
             ],
                 function (err, result) {
-                    log("findNearCats end");
+                    if (showWaterfallLog == true) log("findNearCats end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result);
                     //db.close();
@@ -464,21 +466,21 @@ function findNearUsers(position, findNearUsersCallback)
         try {
             async.waterfall([
                 function (callback) {
-                    log("findNearUsers wtf 1");
+                    if (showWaterfallLog == true) log("findNearUsers wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err, null);
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("findNearUsers wtf 2");
+                    if (showWaterfallLog == true) log("findNearUsers wtf 2");
                     db.collection('userCollection', function (err, collection) {
                         if (err) return callback(err, null);
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("findNearUsers wtf 3");
+                    if (showWaterfallLog == true) log("findNearUsers wtf 3");
                 
                     var locateConstraint = {
                         "userlocate.lon": { "$gte": position.lon - gpsDiff, "$lte": position.lon + gpsDiff },
@@ -497,7 +499,7 @@ function findNearUsers(position, findNearUsersCallback)
                 }
             ],
                 function (err, result) {
-                    log("findNearUsers end");
+                    if (showWaterfallLog == true) log("findNearUsers end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result);
                     //db.close();
@@ -526,21 +528,21 @@ function updateUserData(myid, change, updateUserDataCallback)
         try {
             async.waterfall([
                 function (callback) {
-                    log("updateUserData wtf 1");
+                    if (showWaterfallLog == true) log("updateUserData wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err, 'wtf 1 error');
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("updateUserData wtf 2");
+                    if (showWaterfallLog == true) log("updateUserData wtf 2");
                     db.collection('userCollection', function (err, collection) {
                         if (err) return callback(err, 'wtf 2 err');
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("updateUserData wtf 3");
+                    if (showWaterfallLog == true) log("updateUserData wtf 3");
                     collection.update({ userid: myid }, { $set: change }, { w: 1 }, function (err, doc) {
                         if (err) {
                             console.log('updateUser error'); console.log(err); return callback(err);
@@ -549,7 +551,7 @@ function updateUserData(myid, change, updateUserDataCallback)
                 }
             ],
                 function (err, result) {
-                    log("updateUserData end");
+                    if (showWaterfallLog == true) log("updateUserData end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result['result']);
                     //db.close();
@@ -570,21 +572,21 @@ function updateCatData(catname, change, updateCatDataCallback) {
     try {
         async.waterfall([
             function (callback) {
-                log("updateCatData wtf 1");
+                if (showWaterfallLog == true) log("updateCatData wtf 1");
                 db.open(function (err, db) {
                     if (err) return callback(err, 'wtf 1 error');
                     else callback(null, db);
                 });
             },
             function (db, callback) {
-                log("updateCatData wtf 2");
+                if (showWaterfallLog == true) log("updateCatData wtf 2");
                 db.collection('catCollection', function (err, collection) {
                     if (err) return callback(err, 'wtf 2 err');
                     else callback(null, collection);
                 });
             },
             function (collection, callback) {
-                log("updateCatData wtf 3");
+                if (showWaterfallLog == true) log("updateCatData wtf 3");
                 collection.update({ 'catName': catname }, { $set: change }, { w: 1 }, function (err, doc) {
                     if (err) {
                         console.log('updateCat error'); console.log(err); return callback(err);
@@ -593,7 +595,7 @@ function updateCatData(catname, change, updateCatDataCallback) {
             }
         ],
             function (err, result) {
-                log("updateCatData end");
+                if (showWaterfallLog == true) log("updateCatData end");
                 if (err) throw err;
                 else if (isVerbose == true) log(result['result']);
                 //db.close();
@@ -614,21 +616,21 @@ function addStoreItem(item, addStoreItemCallback) {
         try {
             async.waterfall([
                 function (callback) {
-                    log("addStoreItem wtf 1");
+                    if (showWaterfallLog == true) log("addStoreItem wtf 1");
                     db.open(function (err, db) {
                         if (err) return callback(err, null);
                         else callback(null, db);
                     });
                 },
                 function (db, callback) {
-                    log("addStoreItem wtf 2");
+                    if (showWaterfallLog == true) log("addStoreItem wtf 2");
                     db.collection('storeCollection', function (err, collection) {
                         if (err) return callback(err, null);
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("addStoreItem wtf 3");
+                    if (showWaterfallLog == true) log("addStoreItem wtf 3");
                     collection.insert(item, function (err, res) {
                         if (err) {
                             console.log('insertToDb error');
@@ -641,7 +643,7 @@ function addStoreItem(item, addStoreItemCallback) {
                 }
             ],
                 function (err, result) {
-                    log("addStoreItem end");
+                    if (showWaterfallLog == true) log("addStoreItem end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result);
                     //db.close();
@@ -670,14 +672,14 @@ function findStoreItem(condition, findStoreItemCallback)
                     });
                 },*/
                 function (callback) {
-                    log("findStoreItem wtf 2");
+                    if (showWaterfallLog == true) log("findStoreItem wtf 2");
                     db.collection('storeCollection', function (err, collection) {
                         if (err) return callback(err);
                         else callback(null, collection);
                     });
                 },
                 function (collection, callback) {
-                    log("findStoreItem wtf 3");
+                    if (showWaterfallLog == true) log("findStoreItem wtf 3");
                     consArr = [];
                     consArr.push({ 'itemcatalog': 'foo' })
                     try {
@@ -702,7 +704,7 @@ function findStoreItem(condition, findStoreItemCallback)
                 }
             ],
                 function (err, result) {
-                    log("findStoreItem end");
+                    if (showWaterfallLog == true) log("findStoreItem end");
                     if (err) throw err;
                     else if (isVerbose == true) log(result);
                     //db.close();
@@ -723,14 +725,14 @@ function findItemByID(itemID, findItemByIDCallback)
     try {
         async.waterfall([
             function (callback) {
-                log("findItemByID wtf 2");
+                if (showWaterfallLog == true) log("findItemByID wtf 2");
                 db.collection('storeCollection', function (err, collection) {
                     if (err) return callback(err);
                     else callback(null, collection);
                 });
             },
             function (collection, callback) {
-                log("findItemByID wtf 3");
+                if (showWaterfallLog == true) log("findItemByID wtf 3");
                 collection.find({'itemID':String(itemID)}).toArray(function (err, docs) {
                     if (err) {
                         console.log('findByItemID error');
@@ -744,7 +746,7 @@ function findItemByID(itemID, findItemByIDCallback)
             }
         ],
             function (err, result) {
-                log("findItemByID end");
+                if (showWaterfallLog == true) log("findItemByID end");
                 if (err) throw err; else if (isVerbose == true) log(result);
                 if (!err) findItemByIDCallback(null, result[0]);
             });
@@ -762,7 +764,7 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
     try {
         async.waterfall([
             function (callback) {
-                log("buyItem wtf 1");//find user info
+                if (showWaterfallLog == true) log("buyItem wtf 1");//find user info
                 db.collection('userCollection', function (err, collection) {
                     if (err) return callback(err);
                     else {
@@ -777,14 +779,14 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
                 });
             },
             function (user, callback) {
-                log("buyItem wtf 2");
+                if (showWaterfallLog == true) log("buyItem wtf 2");
                 findItemByID(itemid, function (err, item) {
                     if (err) return callback(err);
                     else callback(null, user, item)
                 });
             },
             function (user, item, callback) {
-                log('buyItem wtf 3');
+                if (showWaterfallLog == true) log('buyItem wtf 3');
                 if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
                 if (isVerbose == true) console.log('item is ' + JSON.stringify(item))
                 if (user != null) {
@@ -814,7 +816,7 @@ function buyItem(userid, itemid, cnt, buyItemCallback)
             }
         ],
             function (err, result) {
-                log("buyItem end");
+                if (showWaterfallLog == true) log("buyItem end");
                 if (err) throw err; else if (isVerbose == true) log(result);
                 if (!err) buyItemCallback(null, result);
             });
@@ -831,7 +833,7 @@ function updateFam(userid, catname, famChange, updateFamCallback)
     try {
         async.waterfall([
             function (callback) {
-                log("updateFam wtf 1");//find user info
+                if (showWaterfallLog == true) log("updateFam wtf 1");//find user info
                 db.collection('userCollection', function (err, collection) {
                     if (err) return callback(err);
                     else {
@@ -846,7 +848,7 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                 });
             },
             function (user, callback) {
-                log("updateFam wtf 2");
+                if (showWaterfallLog == true) log("updateFam wtf 2");
                 db.collection('catCollection', function (err, collection) {
                     if (err) return callback(err);
                     else {
@@ -861,7 +863,7 @@ function updateFam(userid, catname, famChange, updateFamCallback)
                 });
             },
             function (user, cat, callback) {
-                log('updateFam wtf 3');
+                if (showWaterfallLog == true) log('updateFam wtf 3');
                 if (user != null && cat != null) {
                     if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
                     if (isVerbose == true) console.log('cat is ' + JSON.stringify(cat))
@@ -915,7 +917,7 @@ function updateFam(userid, catname, famChange, updateFamCallback)
             }
         ],
             function (err, result) {
-                log("updateFam end");
+                if (showWaterfallLog == true) log("updateFam end");
                 if (err) throw err; else if(isVerbose == true) log(result);
                 if (!err) updateFamCallback(null, result);
             });
@@ -932,7 +934,7 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
     try {
         async.waterfall([
             function (callback) {
-                log("useItem wtf 1");//find user info
+                if (showWaterfallLog == true) log("useItem wtf 1");//find user info
                 db.collection('userCollection', function (err, collection) {
                     if (err) return callback(err);
                     else {
@@ -947,14 +949,14 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
                 });
             },
             function (user, callback) {
-                log("useItem wtf 2");
+                if (showWaterfallLog == true) log("useItem wtf 2");
                 findItemByID(itemid, function (err, item) {
                     if (err) return callback(err);
                     else callback(null, user, item)
                 });
             },
             function (user, item, callback) {
-                log('useItem wtf 3');
+                if (showWaterfallLog == true) log('useItem wtf 3');
                 if (isVerbose == true) console.log('user is ' + JSON.stringify(user))
                 if (isVerbose == true) console.log('item is ' + JSON.stringify(item))
                 if (user != null && item != null) {
@@ -981,7 +983,7 @@ function useItem(userid, itemid, catname, cnt, useItemCallback)
             }
         ],
             function (err, result) {
-                log("useItem end");
+                if (showWaterfallLog == true) log("useItem end");
                 if (err) throw err; else if (isVerbose == true) log(result);
                 if (!err) useItemCallback(null, result);
             });
