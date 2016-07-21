@@ -55,7 +55,7 @@ io.sockets.on('connection', function (socket) {
                     {
                         if (!nearData[i].hasOwnProperty('catName')) continue;
                         var dist = measure(lat, lon, nearData[i].catlocate.lat, nearData[i].catlocate.lon)
-                        if (dist < 20) nearData[i].isNear = true;
+                        if (dist < 500) nearData[i].isNear = true;
                         else nearData[i].isNear = false;
                     }
                     io.to(socket.id).emit('heartbeatRes', nearData);
